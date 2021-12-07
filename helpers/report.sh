@@ -16,18 +16,18 @@ images() {
     echo '<div>'
     for line in ${TARGETDIR}/screenshots/*; do
         FILENAME=$(basename $line | sed 's/[.]png//')
-        URL=$(echo "${FILENAME}" | sed -E 's/^(.*)_/\1\:/; s/_/./g')
+        URL=$(echo "${FILENAME}" | sed 's/_/:/')
         echo "<p><a href=$URL>${URL}</a></p>"
         echo "<img src=${line} width=400px height=auto alt=${URL}>"
         # get nuclei's output
         if [ -s ${TARGETDIR}/nuclei/nuclei_output_technology.txt ]; then
-        technote="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output_technology.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1 $3}')"
+        technote="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output_technology.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
             for tech in $technote; do
                 echo "<p style='color: #404040; font-size: 10px;'>${tech}</p>"
             done
         fi
         if [ -s ${TARGETDIR}/nuclei/nuclei_output.txt ]; then
-            techissue="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1 $3}')"
+            techissue="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
             for issue in $techissue; do
                 echo "<p style='color: #AD3F60; font-size: 10px;'>${issue}</p>"
             done
@@ -54,7 +54,7 @@ echo "<!DOCTYPE html>
 <TITLE>$TITLE</TITLE>
 </HEAD>
 <BODY>
-<p>Invoked by <a href=https://github.com/storenth/lazyrecon>lazyrecon v2.0</a> with next parameters: $INVOKATION</p>
+<p>Invoked by 1a3y.sh with the next parameters: $INVOKATION</p>
 <p>$TIME_STAMP</p>
 <p>Public IP=$PUBLICIP</p>
 <H1>Security report for $1</H1>
