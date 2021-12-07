@@ -36,6 +36,19 @@ images() {
     echo '</div>'
 }
 
+openports(){
+    # add open ports
+    if [ -s ${TARGETDIR}/masscan_output.gnmap ]; then
+        echo "<h4>Open ports found:</h4"
+        ports=$(sort --key=4n --key=7n ${TARGETDIR}/masscan_output.gnmap | cut -d ' ' -f 3,5)
+        for port in $ports; do
+            echo "<p style='color: #1181C8; font-size: 10px;'>${ports}</p>"
+        done
+    else
+        echo "<h3>There are no open ports found.</h3"
+    fi
+}
+
 serverlogs(){
     if [ -s ${TARGETDIR}/_listen_server.log ]; then
         echo '<div>'
@@ -60,6 +73,7 @@ echo "<!DOCTYPE html>
 <H1>Security report for $1</H1>
 "
 
+openports
 images
 serverlogs
 
