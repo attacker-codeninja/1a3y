@@ -247,7 +247,7 @@ dnsprobing(){
       echo
       echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
       # -t mean cuncurrency
-      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -r $AXIOMRESOLVERS -o $TARGETDIR/dnsprobe_out.txt
+      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
       tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
       # split resolved hosts ans its IP (for masscan)
@@ -260,7 +260,7 @@ dnsprobing(){
       echo
       echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
       # -t mean cuncurrency
-      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -r $AXIOMRESOLVERS -o $TARGETDIR/dnsprobe_out.txt
+      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
       tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
       # split resolved hosts ans its IP (for masscan)
