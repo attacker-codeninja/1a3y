@@ -63,7 +63,7 @@ HTTPXCALL="httpx -silent -no-color -threads 250 -H $CUSTOMHEADER -ports 80,81,30
 CHECKHTTPX2XX="httpx -silent -no-color -mc 200,201,202 -threads $NUMBEROFTHREADS -rate-limit $REQUESTSPERSECOND -H $CUSTOMHEADER -random-agent"
 # used in sed to cut
 UNWANTEDPATHS='/[;]/d;/[.]css$/d;/[.]png$/d;/[.]svg$/d;/[.]jpg$/d;/[.]jpeg$/d;/[.]webp$/d;/[.]gif$/d;/[.]woff$/d;/[.]html$/d'
-UNWANTEDQUERIES="/^$/d;/^[^h]/d;/[;]/d;/[.]css$/d;/[.]png$/d;/[.]svg$/d;/[.]jpg$/d;/[.]jpeg$/d;/[.]webp$/d;/[.]gif$/d;/[.]woff$/d;/[.]html$/d;/[()]/d;/[{}]/d;/[\`]/d;/[$]/d"
+UNWANTEDQUERIES="/^$/d;/^[^h]/d;/[;]/d;/[.]css$/d;/[.]png$/d;/[.]svg$/d;/[.]jpg$/d;/[.]jpeg$/d;/[.]webp$/d;/[.]gif$/d;/[.]woff$/d;/[.]html$/d;/[()]/d;/[{}]/d;/[\`]/d;/[\']/d;/[$]/d"
 
 # definitions
 enumeratesubdomains(){
