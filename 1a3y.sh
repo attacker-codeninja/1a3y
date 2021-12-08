@@ -235,7 +235,7 @@ dnsprobing(){
   elif [[ -n "$cidr" ]]; then
     echo "[$(date | awk '{ print $4}')] [dnsx] try to get PTR records"
     cp  $TARGETDIR/enumerated-subdomains.txt $TARGETDIR/dnsprobe_ip.txt
-    dnsx -silent -ptr -resp-only -r $MINIRESOLVERS -l $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/dnsprobe_subdomains.txt # also try to get subdomains
+    axiom-scan $TARGETDIR/dnsprobe_ip.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -ptr -resp-only -o $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$single" ]]; then
     echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
     echo $1 | dnsx -silent -retry 2 -a -resp-only -o $TARGETDIR/dnsprobe_ip.txt
