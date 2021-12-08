@@ -49,6 +49,8 @@ quiet= # quiet mode
 AXIOMRESOLVERS=/home/op/lists/resolvers.txt # default axiom-configuration for the droplets
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
 ALTDNSWORDLIST=./lazyWordLists/altdns_wordlist_uniq.txt
+# https://gist.github.com/six2dez/a307a04a222fab5a57466c51e1569acf
+# https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt
 BRUTEDNSWORDLIST=./wordlist/six2dez_wordlist.txt
 APIWORDLIST=./wordlist/api.txt
 DIRSEARCHWORDLIST=./wordlist/top100.txt
