@@ -274,7 +274,12 @@ checkhttprobe(){
   echo
   echo "[$(date | awk '{ print $4}')] [httpx] Starting http probe testing..."
   # resolve IP and hosts using socket address style for chromium, nuclei, gospider, ssrf, lfi and bruteforce
-  if [[ -n "$ip" || -n "$cidr" || -n "$list" ]]; then
+  if [[ -n "$ip" ]]; then
+    $HTTPXCALL -status-code -l $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt
+    $HTTPXCALL -status-code -l $TARGETDIR/dnsprobe_subdomains.txt >> $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt
+    cut -f1 -d ' ' $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt >> $TARGETDIR/3-all-subdomain-live-scheme.txt
+    grep -E "\[4([0-9]){2}\]" $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt | cut -f1 -d ' ' > $TARGETDIR/4xx-all-subdomain-live-scheme.txt
+  elif [[ -n "$cidr" || -n "$list" ]]; then
     echo "[httpx] IP probe testing..."
     axiom-scan $TARGETDIR/dnsprobe_ip.txt -m $HTTPXCALL -status-code -o $TARGETDIR/tmp/dnsprobe_subdomains-status-code-scheme.txt
     axiom-scan $TARGETDIR/dnsprobe_subdomains.txt -m $HTTPXCALL -status-code -o $TARGETDIR/tmp/dnsprobe_ip-status-code-scheme.txt
