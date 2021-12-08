@@ -139,7 +139,8 @@ enumeratesubdomains(){
 
 getwaybackurl(){
   echo "waybackurls..."
-  < $TARGETDIR/enumerated-subdomains.txt waybackurls | sort -u | grep -E "$2" | qsreplace -a > $TARGETDIR/tmp/waybackurls_output.txt
+  axiom-scan $TARGETDIR/enumerated-subdomains.txt -m waybackurls -o $TARGETDIR/tmp/waybackurls_raw_output.txt
+  grep "$2" $TARGETDIR/tmp/waybackurls_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/waybackurls_output.txt
   echo "waybackurls done."
 }
 getgau(){
@@ -149,7 +150,8 @@ getgau(){
     SUBS="-subs"
   fi
   # gau -subs mean include subdomains
-  < $TARGETDIR/enumerated-subdomains.txt gau $SUBS | sort -u | grep -E "$2" | qsreplace -a > $TARGETDIR/tmp/gau_output.txt
+  axiom-scan $TARGETDIR/enumerated-subdomains.txt -m gau $SUBS -o $TARGETDIR/tmp/gau_raw_output.txt
+  grep "$2" $TARGETDIR/tmp/gau_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/gau_output.txt
   echo "gau done."
 }
 getgithubendpoints(){
@@ -187,7 +189,7 @@ checkwaybackurls(){
 
   if [[ -n "$alt" && -n "$wildcard" ]]; then
     # prepare target specific subdomains wordlist to gain more subdomains using --mad mode
-    < $TARGETDIR/wayback/wayback_output.txt unfurl format %S | sort | uniq > $TARGETDIR/wayback-subdomains-wordlist.txt
+    < $TARGETDIR/wayback/wayback_output.txt unfurl format %S | sort -u -o $TARGETDIR/wayback-subdomains-wordlist.txt
     sort -u $CUSTOMSUBDOMAINSWORDLIST $TARGETDIR/wayback-subdomains-wordlist.txt -o $CUSTOMSUBDOMAINSWORDLIST
   fi
   echo "[$(date | awk '{ print $4}')] wayback machine done."
