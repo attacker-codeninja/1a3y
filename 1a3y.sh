@@ -46,6 +46,7 @@ discord= # send notifications
 vps= # tune async jobs to reduce stuff like concurrent headless chromium but increase bruteforce list and enable DNS bruteforce
 quiet= # quiet mode
 
+AXIOMRESOLVERS=/home/op/lists/resolvers.txt
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
 ALTDNSWORDLIST=./lazyWordLists/altdns_wordlist_uniq.txt
 BRUTEDNSWORDLIST=./wordlist/six2dez_wordlist.txt
@@ -241,8 +242,7 @@ dnsprobing(){
     echo $1 > $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$list" ]]; then
       echo "[$(date | awk '{ print $4}')] [massdns] probing and wildcard sieving..."
-      # shuffledns -silent -list $TARGETDIR/2-all-subdomains.txt -retries 1 -r $MINIRESOLVERS -o $TARGETDIR/shuffledns-list.txt
-      puredns -r $MINIRESOLVERS resolve $TARGETDIR/enumerated-subdomains.txt --wildcard-batch 100000 -l 5000 -w $TARGETDIR/resolved-list.txt
+      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
       # # additional resolving because shuffledns/pureDNS missing IP on output
       echo
       echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
@@ -255,8 +255,7 @@ dnsprobing(){
       cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   else
       echo "[$(date | awk '{ print $4}')] [puredns] massdns probing with wildcard sieving..."
-      puredns -r $MINIRESOLVERS resolve $TARGETDIR/2-all-subdomains.txt --wildcard-batch 100000 -l 5000 -w $TARGETDIR/resolved-list.txt
-      # shuffledns -silent -d $1 -list $TARGETDIR/2-all-subdomains.txt -retries 5 -r $MINIRESOLVERS -o $TARGETDIR/shuffledns-list.txt
+      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
       # additional resolving because shuffledns missing IP on output
       echo
       echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
