@@ -346,8 +346,7 @@ gospidertest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
     echo "[$(date | awk '{ print $4}')] [gospider] Web crawling..."
-    gospider -q -r -H "$CUSTOMHEADER" -S $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/gospider -c 40 -t 40 1> /dev/null
-
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider 1> /dev/null
     # combine the results and filter out of scope
     cat $TARGETDIR/gospider/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
