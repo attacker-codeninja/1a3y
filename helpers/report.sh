@@ -42,18 +42,20 @@ openports(){
         echo "<h4>Open ports found:</h4"
         ports=$(sort --key=4n --key=7n ${TARGETDIR}/masscan_output.gnmap | cut -d ' ' -f 3,5)
         for port in $ports; do
-            echo "<p style='color: #1181C8; font-size: 10px;'>${ports}</p>"
+            echo "<p style='color: #1181C8; font-size: 10px;'>${port}</p>"
         done
     else
         echo "<h3>There are no open ports found.</h3"
     fi
 }
 
-serverlogs(){
+listenserverlogs(){
+    # add listen server logs
     if [ -s ${TARGETDIR}/_listen_server.log ]; then
-        echo '<div>'
-        awk 'NR>11' ${TARGETDIR}/_listen_server.log
-        echo '</div>'
+        srvlogs=$(< ${TARGETDIR}/_listen_server.log jq -r '.protocol,."remote-address",."raw-request"')
+        for srvlog in $srvlogs; do
+            echo "<p style='font-size: 11px;'>${srvlog}</p>"
+        done
     fi
 }
 
@@ -75,7 +77,7 @@ echo "<!DOCTYPE html>
 
 openports
 images
-serverlogs
+listenserverlogs
 
 echo "</BODY>
 </HTML>
