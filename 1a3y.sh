@@ -208,8 +208,8 @@ dnsbruteforcing(){
   if [[  -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date | awk '{ print $4}')] puredns bruteforce..."
     # https://sidxparab.gitbook.io/subdomain-enumeration-guide/active-enumeration/dns-bruteforcing
-    puredns bruteforce $BRUTEDNSWORDLIST $1 -r $MINIRESOLVERS --wildcard-batch 100000 -l 5000 -q | tee $TARGETDIR/purebruteforce.txt >> $TARGETDIR/1-real-subdomains.txt
-    sort -u $TARGETDIR/1-real-subdomains.txt -o $TARGETDIR/1-real-subdomains.txt
+    axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 100000 -l 5000 -q -o $TARGETDIR/puredns-bruteforce-output.txt
+    sort -u $TARGETDIR/puredns-bruteforce-output.txt $TARGETDIR/1-real-subdomains.txt -o $TARGETDIR/1-real-subdomains.txt
     echo "[$(date | awk '{ print $4}')] puredns bruteforce done."
   fi
 }
