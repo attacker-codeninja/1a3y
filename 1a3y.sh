@@ -385,7 +385,7 @@ screenshots(){
   if [ -s "$TARGETDIR"/3-all-subdomain-live-scheme.txt ]; then
     echo "[$(date | awk '{ print $4}')] [screenshot] starts..."
     mkdir "$TARGETDIR"/screenshots
-    ./helpers/gowitness.sh "$TARGETDIR/3-all-subdomain-live-scheme.txt"
+    axiom-scan "$TARGETDIR/3-all-subdomain-live-scheme.txt" -m gowitness -X 1280 -Y 720 -o "${TARGETDIR}"/screenshots
     echo "[$(date | awk '{ print $4}')] [screenshot] done."
   fi
 }

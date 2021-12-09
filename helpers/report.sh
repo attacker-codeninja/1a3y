@@ -15,8 +15,17 @@ PUBLICIP=$(curl -s https://api.ipify.org)
 images() {
     echo '<div>'
     for line in ${TARGETDIR}/screenshots/*; do
-        FILENAME=$(basename $line | sed 's/[.]png//')
-        URL=$(echo "${FILENAME}" | sed 's/_/:/')
+        # remove http(s) and .png file extension
+        FILENAME=$(basename $line | sed -E 's/https?-//;s/[.]png//')
+        # replace - with : if line contains a port
+        # HERE
+        URLWITHPORT=$(echo FILENAME | grep -E "\-[[:digit:]]{2,}$")
+        if [ -n "${URLWITHPORT}" ]; then
+            URL=$(echo $URLWITHPORT | sed -E 's/^(.*)-/\1\:/')
+        else
+            URL=FILENAME
+        fi
+
         echo "<p><a href=$URL>${URL}</a></p>"
         echo "<img src=${line} width=400px height=auto alt=${URL}>"
         # get nuclei's output
