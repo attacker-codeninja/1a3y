@@ -1,0 +1,6 @@
+[{
+        "command":"/home/op/go/bin/ffuf -u HOSTPATH -w input:PATH -w _wordlist_:HOST -of csv -o output",
+        "wordlist":"/home/op/lists/seclists/Discovery/Web-Content/big.txt",
+        "ext":"csv",
+        "threads":"1"
+}]
