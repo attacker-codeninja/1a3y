@@ -739,9 +739,9 @@ ffufbrute(){
           -H "$CUSTOMHEADER" \
           -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
-          -o $TARGETDIR/ffuf/directory-brute
+          -o $TARGETDIR/ffuf/directory-brute.csv
 
-    echo "[$(date | awk '{ print $4}')] directory bruteforce done."
+    echo "[$(date | awk '{ print $4}')] directory bruteforce done"
 }
 
 apibruteforce(){
@@ -749,14 +749,14 @@ apibruteforce(){
     echo "[$(date | awk '{ print $4}')] Start API endpoints bruteforce using ffuf..."
     # API bruteforce
     axiom-scan $APIWORDLIST -m ffuf-hostpath -s \
-              -timeout 5 \
-              -mc 200,201,202,401 \
-              -t 2 \
-              -p 0.5 \
-              -H "$CUSTOMHEADER" \
-              -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008102920 Firefox/3.0.4" \
-              -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
-              -o $TARGETDIR/ffuf/api-brute.csv
+          -timeout 5 \
+          -mc 200,201,202,401 \
+          -t 2 \
+          -p 0.5 \
+          -H "$CUSTOMHEADER" \
+          -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008102920 Firefox/3.0.4" \
+          -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
+          -o $TARGETDIR/ffuf/api-brute.csv
     echo "[$(date | awk '{ print $4}')] API bruteforce done"
 }
 
