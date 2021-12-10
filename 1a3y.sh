@@ -638,7 +638,7 @@ sqlmaptest(){
     echo
     echo "[$(date | awk '{ print $4}')] [sqlmap] SQLi testing..."
     # turn on more tests by swithing: --risk=3 --level=5
-    sqlmap -m $CUSTOMSQLIQUERYLIST --batch --random-agent -f --banner --ignore-code=404 --output-dir=$TARGETDIR/sqlmap/
+    axiom-scan $CUSTOMSQLIQUERYLIST -m sqlmap --output-dir=$TARGETDIR/sqlmap/
     echo "[$(date | awk '{ print $4}')] [sqlmap] done."
   fi
 }
