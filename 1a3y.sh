@@ -395,35 +395,36 @@ nucleitest(){
     echo
     echo "[$(date | awk '{ print $4}')] [nuclei] technologies testing..."
     # use -c for maximum templates processed in parallel
-    nuclei -silent -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -l $TARGETDIR/3-all-subdomain-live-scheme.txt -t $HOMEDIR/nuclei-templates/technologies/ -o $TARGETDIR/nuclei/nuclei_output_technology.txt
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -retries 3 \
+        -o $TARGETDIR/nuclei/nuclei_output_technology.txt \
+            -w /home/op/nuclei-templates/technologies/
+
     echo "[$(date | awk '{ print $4}')] [nuclei] CVE testing..."
-    nuclei -silent -iserver "https://$LISTENSERVER" \
-          -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
-          -o $TARGETDIR/nuclei/nuclei_output.txt \
-                    -l $TARGETDIR/3-all-subdomain-live-scheme.txt \
-                    -exclude-templates $HOMEDIR/nuclei-templates/misconfiguration/http-missing-security-headers.yaml \
-                    -exclude-templates $HOMEDIR/nuclei-templates/miscellaneous/old-copyright.yaml \
-                    -t $HOMEDIR/nuclei-templates/vulnerabilities/ \
-                    -t $HOMEDIR/nuclei-templates/cnvd/ \
-                    -t $HOMEDIR/nuclei-templates/iot/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2013/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2014/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2015/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2016/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2017/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2018/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2019/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2020/ \
-                    -t $HOMEDIR/nuclei-templates/cves/2021/ \
-                    -t $HOMEDIR/nuclei-templates/misconfiguration/ \
-                    -t $HOMEDIR/nuclei-templates/network/ \
-                    -t $HOMEDIR/nuclei-templates/miscellaneous/ \
-                    -t $HOMEDIR/nuclei-templates/takeovers/ \
-                    -t $HOMEDIR/nuclei-templates/default-logins/ \
-                    -t $HOMEDIR/nuclei-templates/exposures/ \
-                    -t $HOMEDIR/nuclei-templates/exposed-panels/ \
-                    -t $HOMEDIR/nuclei-templates/fuzzing/
-    echo "[$(date | awk '{ print $4}')] [nuclei] CVE testing done."
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output.txt \
+            -w /home/op/nuclei-templates/vulnerabilities/ \
+            -w /home/op/nuclei-templates/cnvd/ \
+            -w /home/op/nuclei-templates/iot/ \
+            -w /home/op/nuclei-templates/cves/2013/ \
+            -w /home/op/nuclei-templates/cves/2014/ \
+            -w /home/op/nuclei-templates/cves/2015/ \
+            -w /home/op/nuclei-templates/cves/2016/ \
+            -w /home/op/nuclei-templates/cves/2017/ \
+            -w /home/op/nuclei-templates/cves/2018/ \
+            -w /home/op/nuclei-templates/cves/2019/ \
+            -w /home/op/nuclei-templates/cves/2020/ \
+            -w /home/op/nuclei-templates/cves/2021/ \
+            -w /home/op/nuclei-templates/misconfiguration/ \
+            -w /home/op/nuclei-templates/takeovers/ \
+            -w /home/op/nuclei-templates/default-logins/ \
+            -w /home/op/nuclei-templates/exposures/ \
+            -w /home/op/nuclei-templates/exposed-panels/ \
+            -w /home/op/nuclei-templates/fuzzing/
+
+    echo "[$(date | awk '{ print $4}')] [nuclei] done"
 
     if [ -s $TARGETDIR/nuclei/nuclei_output.txt ]; then
       cut -f4 -d ' ' $TARGETDIR/nuclei/nuclei_output.txt | unfurl paths | sed 's/^\///;s/\/$//;/^$/d' | sort | uniq > $TARGETDIR/nuclei/nuclei_unfurl_paths.txt
