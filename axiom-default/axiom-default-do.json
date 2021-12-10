@@ -1,0 +1,14 @@
+{
+  "do_key": "5c208a022efe7fce19ef0c86ceeb4b9ffcb65cf7af260652f0ba2e3e1b18a6bc",
+  "region": "sgp1",
+  "provider": "do",
+  "default_size": "s-1vcpu-1gb",
+  "appliance_name": "",
+  "appliance_key": "",
+  "appliance_url": "",
+  "email": "",
+  "sshkey": "axiom_rsa",
+  "op": "aaV2lCRliYQilcfXN56REAs8JCg6GlMIh76t9KE7m570W06Yo9yZOIhEmx4OMvdhZrZ1nWMxST2JtY5Dvz4ODktdZ3993QThHbTVGkipjDQcui3lp7OrkbOr7",
+  "imageid": "axiom-default-1638375310",
+  "provisioner": "default"
+}
