@@ -20,26 +20,20 @@ third_party_go_dependencies(){
     # Third-party tools
     gotools[0]="go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder"
     gotools[1]="go install -v github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest"
-    gotools[2]="go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest"
     gotools[3]="go get -v github.com/projectdiscovery/mapcidr/cmd/mapcidr"
     gotools[4]="go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
     gotools[5]="go get -v github.com/projectdiscovery/dnsx/cmd/dnsx"
     gotools[6]="go get -v github.com/tomnomnom/assetfinder"
-    gotools[7]="go get -v github.com/tomnomnom/waybackurls"
     gotools[8]="go get -v github.com/tomnomnom/qsreplace"
     gotools[9]="go get -v github.com/tomnomnom/unfurl"
     gotools[10]="go get -u github.com/tomnomnom/gf"
     gotools[11]="go get -u github.com/jaeles-project/gospider"
-    gotools[12]="go get -u -v github.com/lc/gau"
     gotools[13]="go get github.com/detectify/page-fetch"
     gotools[14]="go get github.com/d3mondev/puredns/v2"
-    gotools[15]="go get -u github.com/sensepost/gowitness"
 
     for gotool in "${gotools[@]}"; do
         $gotool
     done
-
-    nuclei -ut -ud "$HOMEDIR/nuclei-templates"
 
     mkdir -p $HOMEDIR/.gf
     cp -r ./gfpatterns/* $HOMEDIR/.gf
