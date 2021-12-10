@@ -595,44 +595,19 @@ ssrftest(){
     echo
     if [[ -s "$CUSTOMSSRFQUERYLIST" ]]; then
       echo "[$(date | awk '{ print $4}')] [SSRF-3] fuzz original endpoints from wayback and fetched data"
-      ENDPOINTCOUNT=$(< $CUSTOMSSRFQUERYLIST wc -l)
-      echo "requests count = $ENDPOINTCOUNT"
-          ffuf -s -timeout 1 -ignore-body -u HOST${LISTENSERVER} \
-               -w $CUSTOMSSRFQUERYLIST:HOST \
-               -t 1 \
-               -p 0.5 \
-               -H "$CUSTOMHEADER" \
-               -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50" \
-               > /dev/null
+      axiom-scan $CUSTOMSSRFQUERYLIST -m ffuf-hostserver -s \
+            -ignore-body \
+            -timeout 1 \
+            -t 1 \
+            -p 0.5 \
+            -H "$CUSTOMHEADER" \
+            -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50" \
+            -wL $TARGETDIR/_listen_server_file \
+            -o $TARGETDIR/ffuf/ssrf-matched-url.csv \
+            > /dev/null
+
       echo "[$(date | awk '{ print $4}')] [SSRF-3] done."
       echo
-    fi
-
-    if [ -s "$TARGETDIR/ssrf-path-list.txt" ]; then
-      # similar to paramspider but all wayback without limits
-      echo "[$(date | awk '{ print $4}')] [SSRF-3] prepare ssrf-list: concat .com?params= with listen server..."
-
-      while read line; do
-        echo "${line}${LISTENSERVER}" >> $TARGETDIR/ssrf-list.txt
-      done < $TARGETDIR/ssrf-path-list.txt
-
-      echo "[$(date | awk '{ print $4}')] [SSRF-5] fuzz all live servers with ssrf-list"
-      # simple math to watch progress
-      ENDPOINTCOUNT=$(< $TARGETDIR/ssrf-list.txt wc -l)
-      HOSTCOUNT=$(< $TARGETDIR/3-all-subdomain-live-scheme.txt wc -l)
-      echo "HOSTCOUNT=$HOSTCOUNT \t ENDPOINTCOUNT=$ENDPOINTCOUNT"
-      echo $(($HOSTCOUNT*$ENDPOINTCOUNT))
-
-          ffuf -s -timeout 1 -ignore-body -u HOSTPATH \
-              -w $TARGETDIR/3-all-subdomain-live-scheme.txt:HOST \
-              -w $TARGETDIR/ssrf-list.txt:PATH \
-              -t "$NUMBEROFTHREADS" \
-              -rate "$REQUESTSPERSECOND" \
-              -H "$CUSTOMHEADER" \
-              -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36" \
-              > /dev/null
-
-      echo "[$(date | awk '{ print $4}')] [SSRF-5] done."
     fi
   fi
 }
@@ -650,7 +625,7 @@ lfitest(){
             -p 0.5 \
             -H "$CUSTOMHEADER" \
             -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36" \
-            -wL CUSTOMLFIQUERYLIST \
+            -wL $CUSTOMLFIQUERYLIST \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
     echo "[$(date | awk '{ print $4}')] [LFI] done."
@@ -867,6 +842,7 @@ main(){
     sleep 5 # to properly start listen server
     LISTENSERVER=$(tail -n 1 $TARGETDIR/_listen_server.log)
     LISTENSERVER=$(echo $LISTENSERVER | cut -f2 -d ' ')
+    echo $LISTENSERVER > $TARGETDIR/_listen_server_file
     echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
     echo
   fi
