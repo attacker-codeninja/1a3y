@@ -721,31 +721,26 @@ nmap_nse(){
   echo "[$(date | awk '{ print $4}')] [nmap] done."
 }
 
-# directory bruteforce
 ffufbrute(){
-    # ffuf -c stands for colorized, -s for silent mode
-    echo
-    echo "[$(date | awk '{ print $4}')] Start API endpoints bruteforce using ffuf..."
-    ffuf -s -timeout 5 -u HOSTPATH -mc 200,201,202,401 \
-         -w $TARGETDIR/3-all-subdomain-live-scheme.txt:HOST \
-         -w $APIWORDLIST:PATH \
-         -t 2 \
-         -p 0.5 \
-         -H "$CUSTOMHEADER" \
-         -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008102920 Firefox/3.0.4" \
-         -o $TARGETDIR/ffuf/api-brute.html -of html -or true
-
-      # gobuster -x append to each word in the selected wordlist
-      # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
-    echo "[$(date | awk '{ print $4}')] Start directory bruteforce using ffuf..."
+    # gobuster -x append to each word in the selected wordlist
+    # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
     # interlace --silent -tL $TARGETDIR/3-all-subdomain-live-scheme.txt -threads 10 -c "ffuf -timeout 7 -u _target_/FUZZ -mc 200,201,202,401 -fs 0 \-w $CUSTOMFFUFWORDLIST -t $NUMBEROFTHREADS -p 0.5-2.5 -recursion -recursion-depth 2 -H \"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36\" \-o $TARGETDIR/ffuf/_cleantarget_.html -of html -or true"
-    ffuf -timeout 7 -u HOST/PATH -mc 200,201,202,401 -fs 0 -w $TARGETDIR/3-all-subdomain-live-scheme.txt:HOST \
-          -w $CUSTOMFFUFWORDLIST:PATH \
+
+    echo "[$(date | awk '{ print $4}')] Start directory bruteforce using ffuf..."
+    # directory bruteforce
+    # ffuf -c stands for colorized, -s for silent mode
+    # -t for threads, -p delay
+    axiom-scan $CUSTOMFFUFWORDLIST -m ffuf-host-path -s \
           -t 2 \
           -p 0.5 \
+          -fs 0 \
+          -timeout 7 \
+          -mc 200,201,202,401 \
           -H "$CUSTOMHEADER" \
           -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36" \
-          -o $TARGETDIR/ffuf/directory-brute.html -of html -or true
+          -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
+          -o $TARGETDIR/ffuf/directory-brute
+
     echo "[$(date | awk '{ print $4}')] directory bruteforce done."
 }
 
