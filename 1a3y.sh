@@ -744,6 +744,22 @@ ffufbrute(){
     echo "[$(date | awk '{ print $4}')] directory bruteforce done."
 }
 
+apibruteforce(){
+    echo
+    echo "[$(date | awk '{ print $4}')] Start API endpoints bruteforce using ffuf..."
+    # API bruteforce
+    axiom-scan $APIWORDLIST -m ffuf-hostpath -s \
+              -timeout 5 \
+              -mc 200,201,202,401 \
+              -t 2 \
+              -p 0.5 \
+              -H "$CUSTOMHEADER" \
+              -H "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008102920 Firefox/3.0.4" \
+              -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
+              -o $TARGETDIR/ffuf/api-brute.csv
+    echo "[$(date | awk '{ print $4}')] API bruteforce done"
+}
+
 recon(){
   enumeratesubdomains $1
 
@@ -779,6 +795,7 @@ recon(){
 
   if [[ -n "$brute" ]]; then
     ffufbrute $1 # disable/enable yourself (--single preferred) because manually work need on targets without WAF
+    apibruteforce $1
   fi
 
   if [[ -n "$fuzz" ]]; then
