@@ -11,6 +11,10 @@ third_party_wordlists(){
     if ! wget -nc -O six2dez-dns-wordlist.txt https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw/subdomains.txt; then
         exit 1
     fi
+    # nuclei LFI template
+    if ! wget -nc https://raw.githubusercontent.com/storenth/nuclei-templates/master/vulnerabilities/other/storenth-lfi.yaml; then
+        exit 1
+    fi
     # LFI payload
     if ! wget -nc https://raw.githubusercontent.com/storenth/LFI-Payload-List/master/lfi-payload.txt; then
         exit 1
