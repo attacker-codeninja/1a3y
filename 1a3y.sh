@@ -751,15 +751,9 @@ recon(){
     custompathlist $1
   fi
 
-  screenshots $1 &
-  PID_SCREEN=$!
-  echo "Waiting for screenshots ${PID_SCREEN}"
-  wait $PID_SCREEN
+  screenshots $1
 
-  nucleitest $1 &
-  PID_NUCLEI=$!
-  echo "Waiting for nucleitest ${PID_NUCLEI}..."
-  wait $PID_NUCLEI
+  nucleitest $1
 
   if [[ -n "$brute" ]]; then
     ffufbrute $1 # disable/enable yourself (--single preferred) because manually work need on targets without WAF
