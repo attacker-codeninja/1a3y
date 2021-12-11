@@ -743,10 +743,7 @@ recon(){
   permutatesubdomains $1
 
   dnsprobing $1
-  checkhttprobe $1 &
-  PID_HTTPX=$!
-  echo "wait PID_HTTPX=$PID_HTTPX"
-  wait $PID_HTTPX
+  checkhttprobe $1
 
   if [[ -n "$fuzz" || -n "$brute" ]]; then
     gospidertest $1
