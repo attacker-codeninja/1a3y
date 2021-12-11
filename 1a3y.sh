@@ -348,7 +348,7 @@ gospidertest(){
     echo "[$(date | awk '{ print $4}')] [gospider] Web crawling..."
     axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider 1> /dev/null
     # combine the results and filter out of scope
-    cat $TARGETDIR/gospider/* > $TARGETDIR/tmp/gospider_raw_out.txt
+    cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
     # prepare paths list
     grep -e '\[form\]' -e '\[javascript\]' -e '\[linkfinder\]' -e '\[robots\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f3 -d ' ' | sort -u > $TARGETDIR/gospider/gospider_out.txt
