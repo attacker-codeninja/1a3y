@@ -836,14 +836,28 @@ main(){
   echo "target dir created: $TARGETDIR"
 
   if [[ -n "$fuzz" ]]; then
+    echo "Starting up listen server..."
     # Listen server
-    interactsh-client -v -json -o $TARGETDIR/_listen_server.log &
+    interactsh-client -v -json &> $TARGETDIR/_listen_server.log &
     SERVER_PID=$!
-    sleep 5 # to properly start listen server
-    LISTENSERVER=$(tail -n 1 $TARGETDIR/_listen_server.log)
-    LISTENSERVER=$(echo $LISTENSERVER | cut -f2 -d ' ')
-    echo $LISTENSERVER > $TARGETDIR/_listen_server_file
-    echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
+
+    MAXCOUNT=0
+    while [ $MAXCOUNT -le 10 ]; do
+      X=$((X+1))
+      LISTENSERVER=$(tail -n 1 $TARGETDIR/_listen_server.log)
+      if [[ -n "$LISTENSERVER" ]]; then
+          LISTENSERVER=$(echo $LISTENSERVER | cut -f2 -d ' ')
+          break
+      fi
+      sleep 5
+    done
+    if [[ -n "$LISTENSERVER" ]]; then
+        echo $LISTENSERVER > $TARGETDIR/_listen_server_file
+        echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
+    else
+        echo "The listening server is not running"
+        exit 1
+    fi
     echo
   fi
 
