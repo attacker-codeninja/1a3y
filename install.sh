@@ -159,16 +159,33 @@ chromium_dependencies(){
 }
 
 third_party_wordlists(){
-    if ! wget -nc https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt; then
+    # # DNS brute-force
+    if wget -nc https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt; then
+        mv -f $PWD/best-dns-wordlist.txt $PWD/wordlist/best-dns-wordlist.txt
+    else
         exit 1
     fi
+    # # DNS brute-force
+    if wget -nc -O six2dez-dns-wordlist.txt https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw/subdomains.txt
+        mv -f $PWD/six2dez-dns-wordlist.txt $PWD/wordlist/six2dez-dns-wordlist.txt
+    else
+        exit 1
+    fi
+    # # LFI payload
     if wget -nc https://raw.githubusercontent.com/storenth/LFI-Payload-List/master/lfi-payload.txt; then
         mv -f $PWD/lfi-payload.txt $PWD/wordlist/lfi-payload.txt
     else
         exit 1
     fi
+    # API endpoint brute-force
     if wget -nc https://raw.githubusercontent.com/storenth/bruteforce-lists/master/api.txt; then
         mv -f $PWD/api.txt $PWD/wordlist/api.txt
+    else
+        exit 1
+    fi
+    # params wordlist
+    if wget -nc https://raw.githubusercontent.com/storenth/lazyrecon/master/wordlist/params-list.txt; then
+        mv -f $PWD/params-list.txt $PWD/wordlist/params-list.txt
     else
         exit 1
     fi
