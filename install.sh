@@ -18,18 +18,19 @@ fi
 # CI/CD dependencies
 third_party_go_dependencies(){
     # Third-party tools
-    gotools[0]="go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder"
-    gotools[1]="go install -v github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest"
-    gotools[3]="go get -v github.com/projectdiscovery/mapcidr/cmd/mapcidr"
-    gotools[4]="go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
-    gotools[5]="go get -v github.com/projectdiscovery/dnsx/cmd/dnsx"
-    gotools[6]="go get -v github.com/tomnomnom/assetfinder"
-    gotools[8]="go get -v github.com/tomnomnom/qsreplace"
-    gotools[9]="go get -v github.com/tomnomnom/unfurl"
-    gotools[10]="go get -u github.com/tomnomnom/gf"
-    gotools[11]="go get -u github.com/jaeles-project/gospider"
-    gotools[13]="go get github.com/detectify/page-fetch"
-    gotools[14]="go get github.com/d3mondev/puredns/v2"
+    gotools[0]="go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"
+    gotools[1]="go install github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest@latest"
+    gotools[3]="go install github.com/projectdiscovery/mapcidr/cmd/mapcidr@latest"
+    gotools[4]="go install github.com/projectdiscovery/httpx/cmd/httpx@latest"
+    gotools[5]="go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest"
+    gotools[6]="go install github.com/tomnomnom/assetfinder@latest"
+    gotools[8]="go install github.com/tomnomnom/qsreplace@latest"
+    gotools[9]="go install github.com/tomnomnom/unfurl@latest"
+    gotools[10]="go install github.com/tomnomnom/gf@latest"
+    gotools[11]="go install github.com/jaeles-project/gospider@@latest"
+    gotools[13]="go install github.com/detectify/page-fetch@latest"
+    gotools[14]="go install github.com/d3mondev/puredns/v2@latest"
+    gotools[15]="go install github.com/sensepost/gowitness@latest"
 
     for gotool in "${gotools[@]}"; do
         $gotool
@@ -166,7 +167,7 @@ third_party_wordlists(){
         exit 1
     fi
     # # DNS brute-force
-    if wget -nc -O six2dez-dns-wordlist.txt https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw/subdomains.txt
+    if wget -nc -O six2dez-dns-wordlist.txt https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw/subdomains.txt; then
         mv -f $PWD/six2dez-dns-wordlist.txt $PWD/wordlist/six2dez-dns-wordlist.txt
     else
         exit 1
