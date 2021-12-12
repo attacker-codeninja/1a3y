@@ -841,12 +841,15 @@ main(){
       fi
       sleep 5
     done
-    if [[ -n "$LISTENSERVER" ]]; then
-        echo $LISTENSERVER > $TARGETDIR/_listen_server_file
-        echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
+
+    if echo "$LISTENSERVER" | grep ".interactsh.com"; then
+      echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
+      echo $LISTENSERVER > $TARGETDIR/_listen_server_file
+      break
     else
-        echo "The listening server is not running"
-        exit 1
+    # try to use alternative interactsh-client -v -json -server https://interact.sh
+      echo "Listen server failed to start"
+      exit 1
     fi
     echo
   fi
