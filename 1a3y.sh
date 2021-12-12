@@ -541,7 +541,7 @@ custompathlist(){
 
     echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSSRFQUERYLIST"
     # https://github.com/tomnomnom/gf/issues/55
-    xargs -P 20 -n 1 -I {} grep -oiaE "(([[:alnum:][:punct:]]+)+)?{}=" $FILTEREDFETCHEDLIST < $PARAMSLIST >> $CUSTOMSSRFQUERYLIST || true &
+    xargs -n1 -I {} grep -oiaE "(([[:alnum:][:punct:]]+)+)?{}=" $FILTEREDFETCHEDLIST < $PARAMSLIST >> $CUSTOMSSRFQUERYLIST || true &
     pid_01=$!
     wait $pid_01
 
