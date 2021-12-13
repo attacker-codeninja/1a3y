@@ -49,7 +49,7 @@ openports(){
     # add open ports
     if [ -s ${TARGETDIR}/masscan_output.gnmap ]; then
         echo "<h4>Open ports found:</h4"
-        ports=$(cat ${TARGETDIR}/masscan_output.gnmap | sed '1d;2d;3d;4d' | sort -k2n -k5n | cut -d ' ' -f2,4)
+        ports=$(grep "^Host" ${TARGETDIR}/masscan_output.gnmap | sort -k2n -k5n | cut -d ' ' -f2,4)
         for port in $ports; do
             echo "<p style='color: #1181C8; font-size: 10px;'>${port}</p>"
         done
