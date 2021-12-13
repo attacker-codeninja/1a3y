@@ -811,7 +811,7 @@ main(){
   if [[ -n "$fuzz" ]]; then
     echo "Starting up listen server..."
     # Listen server
-    interactsh-client -v -json &> $TARGETDIR/_listen_server.log &
+    interactsh-client -v -server https://interact.sh -json &> $TARGETDIR/_listen_server.log &
     SERVER_PID=$!
 
     MAXCOUNT=0
@@ -825,7 +825,7 @@ main(){
       sleep 5
     done
 
-    if echo "$LISTENSERVER" | grep ".interactsh.com"; then
+    if echo "$LISTENSERVER" | grep -e ".interactsh.com" -e "interact.sh"; then
       echo "Listen server is up $LISTENSERVER with PID=$SERVER_PID"
       echo $LISTENSERVER > $TARGETDIR/_listen_server_file
       break
