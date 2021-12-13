@@ -376,52 +376,128 @@ screenshots(){
 nucleitest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
+    NUCLEI_IN=$TARGETDIR/3-all-subdomain-live-scheme.txt
     echo "[$(date | awk '{ print $4}')] [nuclei] technologies testing..."
     # use -c for maximum templates processed in parallel
-    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
+    axiom-scan $NUCLEI_IN -m nuclei \
         -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -retries 3 \
-        -o $TARGETDIR/nuclei/nuclei_output_technology.txt \
+        -o $TARGETDIR/tmp/nuclei_technology_out.txt \
             -w /home/op/nuclei-templates/technologies/
 
     echo "[$(date | awk '{ print $4}')] [nuclei] CVE testing..."
-    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
+    axiom-scan $NUCLEI_IN -m nuclei \
         -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
         -iserver "https://$LISTENSERVER" \
-        -o $TARGETDIR/nuclei/nuclei_output.txt \
-            -w /home/op/nuclei-templates/vulnerabilities/ \
-            -w /home/op/nuclei-templates/cnvd/ \
-            -w /home/op/nuclei-templates/iot/ \
-            -w /home/op/nuclei-templates/cves/2013/ \
-            -w /home/op/nuclei-templates/cves/2014/ \
-            -w /home/op/nuclei-templates/cves/2015/ \
-            -w /home/op/nuclei-templates/cves/2016/ \
-            -w /home/op/nuclei-templates/cves/2017/ \
-            -w /home/op/nuclei-templates/cves/2018/ \
-            -w /home/op/nuclei-templates/cves/2019/ \
-            -w /home/op/nuclei-templates/cves/2020/ \
-            -w /home/op/nuclei-templates/cves/2021/ \
-            -w /home/op/nuclei-templates/misconfiguration/ \
-            -w /home/op/nuclei-templates/takeovers/ \
-            -w /home/op/nuclei-templates/default-logins/ \
-            -w /home/op/nuclei-templates/exposures/ \
-            -w /home/op/nuclei-templates/exposed-panels/ \
-            -w /home/op/nuclei-templates/fuzzing/
+        -o $TARGETDIR/nuclei/nuclei_output_vulnerabilities.txt \
+            -w /home/op/nuclei-templates/vulnerabilities/
 
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_cnvd.txt \
+            -w /home/op/nuclei-templates/cnvd/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_iot.txt \
+            -w /home/op/nuclei-templates/iot/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2013.txt \
+            -w /home/op/nuclei-templates/cves/2013/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2014.txt \
+            -w /home/op/nuclei-templates/cves/2014/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2015.txt \
+            -w /home/op/nuclei-templates/cves/2015/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2016.txt \
+            -w /home/op/nuclei-templates/cves/2016/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2017.txt \
+            -w /home/op/nuclei-templates/cves/2017/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2018.txt \
+            -w /home/op/nuclei-templates/cves/2018/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2019.txt \
+            -w /home/op/nuclei-templates/cves/2019/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2020.txt \
+            -w /home/op/nuclei-templates/cves/2020/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_2021.txt \
+            -w /home/op/nuclei-templates/cves/2021/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_misconfiguration.txt \
+            -w /home/op/nuclei-templates/misconfiguration/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_takeovers.txt \
+            -w /home/op/nuclei-templates/takeovers/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_default-logins.txt \
+            -w /home/op/nuclei-templates/default-logins/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_exposures.txt \
+            -w /home/op/nuclei-templates/exposures/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_exposed-panels.txt \
+            -w /home/op/nuclei-templates/exposed-panels/
+
+    axiom-scan $NUCLEI_IN -m nuclei \
+        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+        -iserver "https://$LISTENSERVER" \
+        -o $TARGETDIR/nuclei/nuclei_output_fuzzing.txt \
+            -w /home/op/nuclei-templates/fuzzing
+
+    # merge results
+    cat $TARGETDIR/nuclei/* > $TARGETDIR/nuclei_out.txt
     echo "[$(date | awk '{ print $4}')] [nuclei] done"
-
-    if [ -s $TARGETDIR/nuclei/nuclei_output.txt ]; then
-      cut -f4 -d ' ' $TARGETDIR/nuclei/nuclei_output.txt | unfurl paths | sed 's/^\///;s/\/$//;/^$/d' | sort | uniq > $TARGETDIR/nuclei/nuclei_unfurl_paths.txt
-      # filter first and first-second paths from full paths and remove empty lines
-      cut -f1 -d '/' $TARGETDIR/nuclei/nuclei_unfurl_paths.txt | sed '/^$/d' | sort | uniq > $TARGETDIR/nuclei/nuclei_paths.txt
-      cut -f1-2 -d '/' $TARGETDIR/nuclei/nuclei_unfurl_paths.txt | sed '/^$/d' | sort | uniq >> $TARGETDIR/nuclei/nuclei_paths.txt
-
-      # full paths+queries
-      cut -f4 -d ' ' $TARGETDIR/nuclei/nuclei_output.txt | unfurl format '%p%?%q' | sed 's/^\///;s/\/$//;/^$/d' | sort | uniq > $TARGETDIR/nuclei/nuclei_paths_queries.txt
-      sort -u $TARGETDIR/nuclei/nuclei_unfurl_paths.txt $TARGETDIR/nuclei/nuclei_paths.txt $TARGETDIR/nuclei/nuclei_paths_queries.txt -o $TARGETDIR/nuclei/nuclei-paths-list.txt
-    fi
   fi
 }
-
 
 # prepare custom wordlist for
 # ssrf test --fuzz only mode
