@@ -351,7 +351,7 @@ gospidertest(){
     cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
     # prepare paths list
-    grep -e '\[form\]' -e '\[javascript\]' -e '\[linkfinder\]' -e '\[robots\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f3 -d ' ' | sort -u > $TARGETDIR/gospider/gospider_out.txt
+    grep -e '\[form\]' -e '\[javascript\]' -e '\[linkfinder\]' -e '\[robots\]' -e '\[href\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f3 -d ' ' | sort -u > $TARGETDIR/gospider/gospider_out.txt
     grep '\[url\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f5 -d ' ' | sort -u >> $TARGETDIR/gospider/gospider_out.txt
 
     if [[ -z "$single" ]]; then
@@ -369,7 +369,7 @@ pagefetcher(){
     echo
     echo "[$(date | awk '{ print $4}')] [page-fetch] Fetch page's DOM..."
     axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m page-fetch -o $TARGETDIR/page-fetched --no-third-party --exclude image/ --exclude css/ 1> /dev/null
-    grep -horE "https?:[^\"\\'> ]+|www[.][^\"\\'> ]+" $TARGETDIR/page-fetched | sort -u > $TARGETDIR/page-fetched/pagefetcher_output.txt
+    grep -horE "https?:[^\"\\'> ]+|www[.][^\"\\'> ]+" $TARGETDIR/page-fetched/merge | sort -u > $TARGETDIR/page-fetched/pagefetcher_output.txt
 
     if [[ -z "$single" ]]; then
         # extract domains
