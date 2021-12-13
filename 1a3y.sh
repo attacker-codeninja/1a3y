@@ -542,7 +542,7 @@ custompathlist(){
     echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSSRFQUERYLIST"
     # https://github.com/tomnomnom/gf/issues/55
     # https://savannah.gnu.org/bugs/?61664
-    xargs -n1 -I {} grep -oiE "(([[:alnum:][:punct:]]+)+)?{}=" $FILTEREDFETCHEDLIST < $PARAMSLIST >> $CUSTOMSSRFQUERYLIST || true &
+    xargs -n1 -I {} grep -oiE "^https?://(([[:alnum:][:punct:]]+)+)?{}=" $FILTEREDFETCHEDLIST < $PARAMSLIST >> $CUSTOMSSRFQUERYLIST || true &
     pid_01=$!
     wait $pid_01
 
