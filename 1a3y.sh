@@ -363,23 +363,6 @@ gospidertest(){
   fi
 }
 
-pagefetcher(){
-  if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
-    SCOPE=$1
-    echo
-    echo "[$(date | awk '{ print $4}')] [page-fetch] Fetch page's DOM..."
-    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m page-fetch -o $TARGETDIR/page-fetched --no-third-party --exclude image/ --exclude css/ 1> /dev/null
-    grep -horE "https?:[^\"\\'> ]+|www[.][^\"\\'> ]+" $TARGETDIR/page-fetched/merge | sort -u > $TARGETDIR/page-fetched/pagefetcher_output.txt
-
-    if [[ -z "$single" ]]; then
-        # extract domains
-        < $TARGETDIR/page-fetched/pagefetcher_output.txt unfurl --unique domains | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" | sort -u | \
-                      $HTTPXCALL >> $TARGETDIR/3-all-subdomain-live-scheme.txt
-    fi
-    echo "[$(date | awk '{ print $4}')] [page-fetch] done."
-  fi
-}
-
 # async ability for execute chromium
 screenshots(){
   if [ -s "$TARGETDIR"/3-all-subdomain-live-scheme.txt ]; then
@@ -452,10 +435,10 @@ custompathlist(){
   echo
   echo "[$(date | awk '{ print $4}')] Prepare custom lists"
   if [[ -n "$mad" ]]; then
-    sort -u $TARGETDIR/wayback/wayback_output.txt $TARGETDIR/gospider/gospider_out.txt $TARGETDIR/page-fetched/pagefetcher_output.txt -o $RAWFETCHEDLIST
+    sort -u $TARGETDIR/wayback/wayback_output.txt $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
     # rm -rf $TARGETDIR/wayback/wayback_output.txt
   else
-    sort -u $TARGETDIR/gospider/gospider_out.txt $TARGETDIR/page-fetched/pagefetcher_output.txt -o $RAWFETCHEDLIST
+    sort -u $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
   fi
 
   xargs -P 20 -n 1 -I {} grep -iE "^https?://(w{3}.)?([[:alnum:]_\-]+)?[.]?{}" $RAWFETCHEDLIST < $TARGETDIR/3-all-subdomain-live.txt | sed $UNWANTEDQUERIES > $FILTEREDFETCHEDLIST || true
@@ -747,7 +730,6 @@ recon(){
 
   if [[ -n "$fuzz" || -n "$brute" ]]; then
     gospidertest $1
-    pagefetcher $1
     custompathlist $1
   fi
 
@@ -870,8 +852,6 @@ main(){
   if [[ -n "$fuzz" || -n "$brute" ]]; then
     mkdir $TARGETDIR/ffuf/
     mkdir $TARGETDIR/gospider/
-    mkdir $TARGETDIR/page-fetched/
-    touch $TARGETDIR/page-fetched/pagefetcher_output.txt
   fi
 
   # used for fuzz and bruteforce

@@ -28,7 +28,6 @@ third_party_go_dependencies(){
     gotools[9]="go install github.com/tomnomnom/unfurl@latest"
     gotools[10]="go install github.com/tomnomnom/gf@latest"
     gotools[11]="go install github.com/jaeles-project/gospider@@latest"
-    gotools[13]="go install github.com/detectify/page-fetch@latest"
     gotools[14]="go install github.com/d3mondev/puredns/v2@latest"
     gotools[15]="go install github.com/sensepost/gowitness@latest"
 
