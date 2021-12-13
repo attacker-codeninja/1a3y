@@ -29,14 +29,14 @@ images() {
         echo "<p><a href=$URL>${URL}</a></p>"
         echo "<img src=${line} width=400px height=auto alt=${URL}>"
         # get nuclei's output
-        if [ -s ${TARGETDIR}/nuclei/nuclei_output_technology.txt ]; then
-        technote="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output_technology.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
+        if [ -s ${TARGETDIR}/tmp/nuclei_technology_out.txt ]; then
+        technote="$(grep $URL ${TARGETDIR}/tmp/nuclei_technology_out.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
             for tech in $technote; do
                 echo "<p style='color: #404040; font-size: 10px;'>${tech}</p>"
             done
         fi
-        if [ -s ${TARGETDIR}/nuclei/nuclei_output.txt ]; then
-            techissue="$(grep $URL ${TARGETDIR}/nuclei/nuclei_output.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
+        if [ -s ${TARGETDIR}/nuclei_output.txt ]; then
+            techissue="$(grep $URL ${TARGETDIR}/nuclei_output.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
             for issue in $techissue; do
                 echo "<p style='color: #AD3F60; font-size: 10px;'>${issue}</p>"
             done
