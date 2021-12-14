@@ -592,7 +592,8 @@ custompathlist(){
         # test means if linkfinder did not provide any output secretfinder testing makes no sense
         if [ -s $TARGETDIR/tmp/js-list.txt ]; then
             echo "$(date | awk '{ print $4}')] secretfinder"
-            xargs -I '{}' secretfinder -H "$CUSTOMHEADER" -i {} -o cli < $TARGETDIR/tmp/js-list.txt > $TARGETDIR/tmp/secretfinder-list.txt
+            # https://github.com/m4ll0k/SecretFinder/issues/20
+            xargs -I '{}' secretfinder -i {} -o cli < $TARGETDIR/tmp/js-list.txt > $TARGETDIR/tmp/secretfinder-list.txt
             echo "$(date | awk '{ print $4}')] done"
         fi
         chmod 660 $TARGETDIR/tmp/js-list.txt
