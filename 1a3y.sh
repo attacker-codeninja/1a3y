@@ -601,14 +601,10 @@ custompathlist(){
     echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSSRFQUERYLIST"
     # https://github.com/tomnomnom/gf/issues/55
     # https://savannah.gnu.org/bugs/?61664
-    xargs -n1 -I {} grep -oiE "^https?://(([[:alnum:][:punct:]]+)+)?{}=" $FILTEREDFETCHEDLIST < $PARAMSLIST >> $CUSTOMSSRFQUERYLIST || true &
-    pid_01=$!
-    wait $pid_01
+    xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
 
     echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSQLIQUERYLIST"
-    grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true &
-    pid_02=$!
-    wait $pid_02
+    grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
 
     sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
     sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
