@@ -517,7 +517,7 @@ custompathlist(){
     sort -u $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
   fi
 
-  xargs -P 20 -n 1 -I {} grep -iE "^https?://(w{3}.)?([[:alnum:]_\-]+)?[.]?{}" $RAWFETCHEDLIST < $TARGETDIR/3-all-subdomain-live.txt | sed $UNWANTEDQUERIES > $FILTEREDFETCHEDLIST || true
+  xargs -I '{}' echo '^https?://(w{3}.)?([[:alnum:]_\-]+)?[.]?{}' < $TARGETDIR/3-all-subdomain-live.txt | grep -oiEf - $RAWFETCHEDLIST | sed $UNWANTEDQUERIES > $FILTEREDFETCHEDLIST || true
 
   if [[ -n "$brute" ]]; then
     echo "Prepare custom CUSTOMFFUFWORDLIST"
@@ -536,7 +536,7 @@ custompathlist(){
         sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
 
         echo "linkfinder"
-        xargs -P 20 -n 1 -I {} linkfinder -i {} -o cli < $TARGETDIR/tmp/js-list.txt | sed $UNWANTEDPATHS > $TARGETDIR/tmp/linkfinder-output.txt
+        xargs -I '{}' linkfinder -i {} -o cli < $TARGETDIR/tmp/js-list.txt | sed $UNWANTEDPATHS > $TARGETDIR/tmp/linkfinder-output.txt
 
         if [ -s $TARGETDIR/tmp/linkfinder-output.txt ]; then
           sort -u $TARGETDIR/tmp/linkfinder-output.txt -o $TARGETDIR/tmp/linkfinder-output.txt
@@ -592,7 +592,7 @@ custompathlist(){
         # test means if linkfinder did not provide any output secretfinder testing makes no sense
         if [ -s $TARGETDIR/tmp/js-list.txt ]; then
             echo "secretfinder"
-            xargs -P 20 -n 1 -I {} secretfinder -H "$CUSTOMHEADER" -i {} -o cli < $TARGETDIR/tmp/js-list.txt > $TARGETDIR/tmp/secretfinder-list.txt
+            xargs -I '{}' secretfinder -H "$CUSTOMHEADER" -i {} -o cli < $TARGETDIR/tmp/js-list.txt > $TARGETDIR/tmp/secretfinder-list.txt
         fi
         chmod 660 $TARGETDIR/tmp/js-list.txt
         chmod 660 $TARGETDIR/tmp/linkfinder-output.txt
