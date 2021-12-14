@@ -512,7 +512,6 @@ custompathlist(){
   echo "[$(date | awk '{ print $4}')] Prepare custom lists"
   if [[ -n "$mad" ]]; then
     sort -u $TARGETDIR/wayback/wayback_output.txt $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
-    # rm -rf $TARGETDIR/wayback/wayback_output.txt
   else
     sort -u $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
   fi
