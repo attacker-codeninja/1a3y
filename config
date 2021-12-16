@@ -1,13 +1,17 @@
-export HOMEUSER=
-export HOMEDIR=
+export HOMEUSER=root
+export HOMEDIR=/root
 export STORAGEDIR=${HOMEDIR}/lazytargets
 
-export GITHUBTOKEN=
-export DISCORDWEBHOOKURL=
+export GITHUBTOKEN=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
+export VT_API_KEY=d1dc4fbed0cffb97be26994a5fe03d08ee1488379c36c80d175c67856ac948ed
+export SPYSE_API_TOKEN=10f289e6-1f58-4a9d-800b-08bcdb311372
+export DIGITALOCEANTOKEN=5c208a022efe7fce19ef0c86ceeb4b9ffcb65cf7af260652f0ba2e3e1b18a6bc
+export DISCORDWEBHOOKURL=https://discord.com/api/webhooks/828907870493737020/kpsL8z5wK23vTwChaNIEfd2HSIBEMfFQMqj-3nbV5VrHRu-I61i5eNmApcVMVEoxbOpw
 
-export CUSTOMHEADER=''
+export CUSTOMHEADER='X-HackerOne-Research:storenth'
 export NUMBEROFTHREADS=20
 export REQUESTSPERSECOND=5
+export TIMEOUT=60 # seconds
 
 export GOPATH=$HOMEDIR/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$HOME/go/bin
