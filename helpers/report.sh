@@ -35,8 +35,8 @@ images() {
                 echo "<p style='color: #404040; font-size: 10px;'>${tech}</p>"
             done
         fi
-        if [ -s ${TARGETDIR}/nuclei_output.txt ]; then
-            techissue="$(grep ${URL} ${TARGETDIR}/nuclei_output.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
+        if [ -s $TARGETDIR/nuclei/nuclei_out.txt ]; then
+            techissue="$(grep ${URL} $TARGETDIR/nuclei/nuclei_out.txt | cut -d ' ' -f 3,5,6 | awk '{ print $2 $1" "$3}')"
             for issue in $techissue; do
                 echo "<p style='color: #AD3F60; font-size: 10px;'>${issue}</p>"
             done
