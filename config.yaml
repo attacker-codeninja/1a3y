@@ -1,0 +1,103 @@
+resolvers:
+    - 1.1.1.1
+    - 1.0.0.1
+    - 1.0.0.2
+    - 1.1.1.2
+    - 8.8.8.8
+    - 8.8.4.4
+    - 9.9.9.9
+    - 9.9.9.10
+    - 77.88.8.8
+    - 77.88.8.1
+    - 208.67.222.222
+    - 208.67.220.220
+sources:
+    - alienvault
+    - anubis
+    - bufferover
+    - certspotter
+    - censys
+    - chaos
+    - crtsh
+    - dnsdumpster
+    - hackertarget
+    - intelx
+    - passivetotal
+    - robtex
+    - riddler
+    - securitytrails
+    - shodan
+    - spyse
+    - sublist3r
+    - threatcrowd
+    - threatminer
+    - virustotal
+all-sources:
+    - alienvault
+    - anubis
+    - archiveis
+    - binaryedge
+    - bufferover
+    - censys
+    - certspotter
+    - chaos
+    - commoncrawl
+    - crtsh
+    - dnsdumpster
+    - dnsdb
+    - github
+    - hackertarget
+    - intelx
+    - passivetotal
+    - rapiddns
+    - riddler
+    - recon
+    - robtex
+    - securitytrails
+    - shodan
+    - sitedossier
+    - sonarsearch
+    - spyse
+    - sublist3r
+    - threatbook
+    - threatcrowd
+    - threatminer
+    - virustotal
+    - waybackarchive
+    - zoomeye
+recursive:
+    - alienvault
+    - binaryedge
+    - bufferover
+    - certspotter
+    - crtsh
+    - dnsdumpster
+    - hackertarget
+    - passivetotal
+    - securitytrails
+    - sonarsearch
+    - sublist3r
+    - virustotal
+binaryedge: []
+censys: []
+certspotter: []
+chaos:
+    - 32b08e2ab341d706aebc9dcf97a2ac528465606efddffa46ebe8756de8a969ec
+dnsdb: []
+github:
+    - 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
+intelx: []
+passivetotal: []
+recon: []
+robtex: []
+securitytrails:
+    - bw05lYHYulHUN8hzj9ZpoDQEIPYyE8Er
+shodan: []
+spyse:
+    - 10f289e6-1f58-4a9d-800b-08bcdb311372
+threatbook: []
+urlscan: []
+virustotal:
+    - d1dc4fbed0cffb97be26994a5fe03d08ee1488379c36c80d175c67856ac948ed
+zoomeye: []
+subfinder-version: 2.4.8
