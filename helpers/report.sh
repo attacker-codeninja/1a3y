@@ -50,8 +50,8 @@ openports(){
     if [ -s ${TARGETDIR}/masscan_output.gnmap ]; then
         echo "<h4>Open ports found:</h4"
         ports=$(grep "^Host" ${TARGETDIR}/masscan_output.gnmap | sort -k2n -k5n | cut -d ' ' -f2,4)
-        for port in $ports; do
-            echo "<p style='color: #1181C8; font-size: 10px;'>${port}</p>"
+        for port in "${ports}"; do
+            echo "<p style='color: #1181C8; font-size: 10px;'>"${port}"</p>"
         done
     else
         echo "<h3>There are no open ports found.</h3"
