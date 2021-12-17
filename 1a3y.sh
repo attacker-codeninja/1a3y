@@ -430,20 +430,21 @@ custompathlist(){
         sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
 
         echo "linkfinder"
-        xargs -I '{}' linkfinder -i {} -o cli < $TARGETDIR/tmp/js-list.txt | sed $UNWANTEDPATHS > $TARGETDIR/tmp/linkfinder-output.txt
+        axiom-scan $TARGETDIR/tmp/js-list.txt -m linkfinder -o $TARGETDIR/linkfinder/
+        sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
 
-        if [ -s $TARGETDIR/tmp/linkfinder-output.txt ]; then
-          sort -u $TARGETDIR/tmp/linkfinder-output.txt -o $TARGETDIR/tmp/linkfinder-output.txt
-          sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/tmp/linkfinder-output.txt
+        if [ -s $TARGETDIR/linkfinder/linkfinder_out.txt ]; then
+          sort -u $TARGETDIR/linkfinder/linkfinder_out.txt -o $TARGETDIR/linkfinder/linkfinder_out.txt
+          sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/linkfinder/linkfinder_out.txt
 
           echo "[debug-1] linkfinder: search for js|json"
-            cut -f2 -d ' ' $TARGETDIR/tmp/linkfinder-output.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
+            cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
 
             echo "[debug-2] linkfinder: concat source URL with found path from this URL"
             # dynamic sensor
             BAR='##############################'
             FILL='------------------------------'
-            totalLines=$(wc -l "$TARGETDIR"/tmp/linkfinder-output.txt | awk '{print $1}')  # num. lines in file
+            totalLines=$(wc -l "$TARGETDIR"/linkfinder/linkfinder_out.txt | awk '{print $1}')  # num. lines in file
             barLen=30
             count=0
             while read line; do
@@ -458,7 +459,7 @@ custompathlist(){
                 if [[ -n "$path2" ]]; then
                   echo "$url$path2" >> $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
                 fi
-            done < $TARGETDIR/tmp/linkfinder-output.txt
+            done < $TARGETDIR/linkfinder/linkfinder_out.txt
 
               if [ -s $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt ]; then
                   sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
@@ -490,8 +491,6 @@ custompathlist(){
             axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/tmp/secretfinder/
             echo "$(date | awk '{ print $4}')] done"
         fi
-        chmod 660 $TARGETDIR/tmp/js-list.txt
-        chmod 660 $TARGETDIR/tmp/linkfinder-output.txt
     fi
 
     echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSSRFQUERYLIST"
