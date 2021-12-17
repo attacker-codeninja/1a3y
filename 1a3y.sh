@@ -488,7 +488,8 @@ custompathlist(){
         if [ -s $TARGETDIR/tmp/js-list.txt ]; then
             echo "$(date | awk '{ print $4}')] secretfinder"
             # https://github.com/m4ll0k/SecretFinder/issues/20
-            axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/tmp/secretfinder/
+            axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/secretfinder/
+            cat $TARGETDIR/secretfinder/* > $TARGETDIR/tmp/secretfinder_out.txt
             echo "$(date | awk '{ print $4}')] done"
         fi
     fi
