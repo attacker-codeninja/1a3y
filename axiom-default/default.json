@@ -245,6 +245,9 @@
         "echo 'Installing LinkFinder'",
         "/bin/su -l op -c 'git clone https://github.com/storenth/LinkFinder.git /home/op/recon/LinkFinder && cd /home/op/recon/LinkFinder && pip3 install -r requirements.txt && sudo python3 setup.py install && cd'",
 
+        "echo 'Installing SecretFinder'",
+        "/bin/su -l op -c 'git clone --depth 1 https://github.com/storenth/SecretFinder.git /home/op/recon/SecretFinder && cd /home/op/recon/SecretFinder && pip3 install -r requirements.txt && chmod +x SecretFinder.py && cd'",
+
         "echo 'Installing masscan'",
         "apt install masscan -y -qq",
 
