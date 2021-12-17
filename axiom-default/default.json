@@ -243,7 +243,7 @@
         "/bin/su -l op -c '/usr/local/go/bin/go install github.com/tomnomnom/hacks/kxss@latest'",
 
         "echo 'Installing LinkFinder'",
-        "/bin/su -l op -c 'git clone https://github.com/GerbenJavado/LinkFinder /home/op/recon/LinkFinder && cd /home/op/recon/LinkFinder && pip3 install -r requirements.txt && sudo python3 setup.py install && cd'",
+        "/bin/su -l op -c 'git clone https://github.com/storenth/LinkFinder.git /home/op/recon/LinkFinder && cd /home/op/recon/LinkFinder && pip3 install -r requirements.txt && sudo python3 setup.py install && cd'",
 
         "echo 'Installing masscan'",
         "apt install masscan -y -qq",
