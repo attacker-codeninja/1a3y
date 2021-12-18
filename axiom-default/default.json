@@ -346,10 +346,8 @@
         "echo 'Installing wpscan'",
         "gem install wpscan",
 
-	"echo 'Installing page-fetcher'",
-	"/bin/su -l op -c 'GO111MODULE=on /usr/local/go/bin/go install github.com/detectify/page-fetch@latest'"
-	
-	"sudo ln -s /usr/bin/python3 /usr/bin/python"
+        "sudo ln -s /usr/bin/python3 /usr/bin/python",
+
         "/bin/su -l op -c '/usr/local/go/bin/go  clean -modcache'",
         "/bin/su -l op -c 'wget -q -O gf-completion.zsh https://raw.githubusercontent.com/tomnomnom/gf/master/gf-completion.zsh && cat gf-completion.zsh >> /home/op/.zshrc && rm gf-completion.zsh && cd'",
         "/bin/su -l root -c 'apt-get clean'",
