@@ -572,11 +572,11 @@ lfitest(){
     echo "[$(date | awk '{ print $4}')] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
       axiom-scan $LFIPAYLOAD -m ffuf-hostpath -s \
             -timeout 5 \
-            -mr "root:[x*]:0:0:" \
+            -mr "root:x" \
             -t 2 \
             -p 0.5 \
             -H "$CUSTOMHEADER" \
-            -H "User-Agent: Mozilla/5.0 \(Macintosh; Intel Mac OS X 11_2_1\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/88.0.4324.192 Safari/537.36" \
+            -H "User-Agent:Mozilla/5.0 \(Macintosh\; Intel Mac OS X 11_2_1\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/88.0.4324.192 Safari/537.36" \
             -wL $CUSTOMLFIQUERYLIST \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
