@@ -109,25 +109,9 @@ enumeratesubdomains(){
       if [[ -n "$alt" ]]; then
         echo
         echo "[subfinder] second try..."
-        # dynamic sensor
-        BAR='##############################'
-        FILL='------------------------------'
-        totalLines=$(wc -l "$TARGETDIR"/enumerated-subdomains.txt | awk '{print $1}')  # num. lines in file
-        barLen=30
-        count=0
-
-          # --- iterate over lines in file ---
-          while read line; do
-              # update progress bar
-              count=$(($count + 1))
-              percent=$((($count * 100 / $totalLines * 100) / 100))
-              i=$(($percent * $barLen / 100))
-              echo -ne "\r[${BAR:0:$i}${FILL:$i:barLen}] $count/$totalLines ($percent%)"
-              subfinder -silent -d $line >> "${TARGETDIR}"/subfinder-list-2.txt
-          done < "${TARGETDIR}"/enumerated-subdomains.txt
+        axiom-scan "${TARGETDIR}"/enumerated-subdomains.txt -m subfinder-distributed -o "${TARGETDIR}"/subfinder-list-2.txt
 
         sort -u "$TARGETDIR"/enumerated-subdomains.txt "$TARGETDIR"/subfinder-list-2.txt -o "$TARGETDIR"/enumerated-subdomains.txt
-
         < $TARGETDIR/enumerated-subdomains.txt unfurl format %S | sort | uniq > $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt
         sort -u $ALTDNSWORDLIST $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt -o $CUSTOMSUBDOMAINSWORDLIST
       fi
