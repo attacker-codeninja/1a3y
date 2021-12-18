@@ -406,8 +406,10 @@ custompathlist(){
   fi
 
   if [[ -n "$fuzz" ]]; then
-    # linkfinder & secretfinder
+    # js & json 
     grep -ioE "(([[:alnum:][:punct:]]+)+)[.](js|json)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list.txt || true
+    # txt, log & other stuff
+    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/juicy-files-list.txt || true
 
     if [ -s $TARGETDIR/tmp/js-list.txt ]; then
 
