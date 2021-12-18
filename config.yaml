@@ -18,6 +18,7 @@ sources:
     - certspotter
     - censys
     - chaos
+    - github
     - crtsh
     - dnsdumpster
     - hackertarget
