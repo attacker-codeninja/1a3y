@@ -94,6 +94,15 @@ third_party_dependencies(){
         fi
     fi
 
+    if ! type ffuf; then
+        if [[ -n "$MACOS" ]]; then
+            wget -nc https://github.com/ffuf/ffuf/releases/download/v1.2.1/ffuf_1.2.1_macOS_amd64.tar.gz
+        else
+            wget -nc https://github.com/ffuf/ffuf/releases/download/v1.2.1/ffuf_1.2.1_linux_amd64.tar.gz
+        fi
+        tar xfzv ffuf_1.2.1_* && ln -s $PWD/ffuf /usr/local/bin/ffuf
+    fi
+
 }
 
 # need to be in $PATH in case no chrome installed: ./chromium-latest-linux/latest/chrome
