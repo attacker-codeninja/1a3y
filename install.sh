@@ -72,15 +72,6 @@ third_party_dependencies(){
         fi
     fi
 
-    if ! type ffuf; then
-        if [[ -n "$MACOS" ]]; then
-            wget -nc https://github.com/ffuf/ffuf/releases/download/v1.2.1/ffuf_1.2.1_macOS_amd64.tar.gz
-        else
-            wget -nc https://github.com/ffuf/ffuf/releases/download/v1.2.1/ffuf_1.2.1_linux_amd64.tar.gz
-        fi
-        tar xfzv ffuf_1.2.1_* && ln -s $PWD/ffuf /usr/local/bin/ffuf
-    fi
-
     if ! type massdns; then
         git clone https://github.com/blechschmidt/massdns.git
         if cd massdns; then
@@ -99,15 +90,6 @@ third_party_dependencies(){
         if cd masscan; then
             make
             ln -s $PWD/bin/masscan /usr/local/bin/masscan
-            cd -
-        fi
-    fi
-
-    if ! type dnsgen; then
-        git clone https://github.com/ProjectAnte/dnsgen
-        if cd dnsgen; then
-            pip3 install -r requirements.txt
-            python3 setup.py install
             cd -
         fi
     fi
