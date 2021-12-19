@@ -201,7 +201,7 @@ dnsbruteforcing(){
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date | awk '{ print $4}')] dnsgen..."
-    dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/tmp/dnsgen_out.txt
+    axiom-scan $TARGETDIR/1-real-subdomains.txt -m dnsgen -o $TARGETDIR/tmp/dnsgen_out.txt
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
 
     sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt -o $TARGETDIR/2-all-subdomains.txt
