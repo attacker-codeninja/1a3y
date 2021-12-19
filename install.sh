@@ -27,9 +27,7 @@ third_party_go_dependencies(){
     gotools[8]="go install github.com/tomnomnom/qsreplace@latest"
     gotools[9]="go install github.com/tomnomnom/unfurl@latest"
     gotools[10]="go install github.com/tomnomnom/gf@latest"
-    gotools[11]="go install github.com/jaeles-project/gospider@@latest"
     gotools[14]="go install github.com/d3mondev/puredns/v2@latest"
-    gotools[15]="go install github.com/sensepost/gowitness@latest"
 
     for gotool in "${gotools[@]}"; do
         $gotool
@@ -114,30 +112,6 @@ third_party_dependencies(){
         fi
     fi
 
-    if ! type sqlmap; then
-        git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
-        ln -s $PWD/sqlmap-dev/sqlmap.py /usr/local/bin/sqlmap
-    fi
-
-    if ! type linkfinder; then
-        git clone --depth 1 https://github.com/storenth/LinkFinder.git
-        if cd LinkFinder; then
-            python3 setup.py install
-            pip3 install -r requirements.txt
-            ln -s $PWD/linkfinder.py /usr/local/bin/linkfinder
-            cd -
-        fi
-    fi
-
-    if ! type secretfinder; then
-        git clone --depth 1 https://github.com/storenth/SecretFinder.git
-        if cd SecretFinder; then
-            pip3 install -r requirements.txt
-            chmod +x $PWD/SecretFinder.py
-            ln -s $PWD/SecretFinder.py /usr/local/bin/secretfinder
-            cd -
-        fi
-    fi
 }
 
 # need to be in $PATH in case no chrome installed: ./chromium-latest-linux/latest/chrome
