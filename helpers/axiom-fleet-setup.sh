@@ -4,7 +4,7 @@
 
 scp_provision_script(){
     # download and wordlist dependencies to the fleet
-    if axiom-scp '/root/.config/subfinder/config.yaml' 'lazy*':'/home/op/.config/subfinder/config.yaml'; then
+    if axiom-scp '/root/.config/subfinder/config.yaml' 'lazy*':'/home/op/.config/subfinder/'; then
     else
         exit 1
     fi
