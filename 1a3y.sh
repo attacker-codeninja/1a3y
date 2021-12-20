@@ -520,7 +520,7 @@ ssrftest(){
     # echo "[$(date | awk '{ print $4}')] [SSRF-1] done."
     echo
     # https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/burp-parameter-names.txt
-    echo "[$(date | awk '{ print $4}')] [SSRF-2] Blind probe..."
+    echo "[$(date | awk '{ print $4}')] [SSRF] Blind probe..."
         ffuf -s -timeout 1 -ignore-body -u HOST/\?url=https://${LISTENSERVER}/DOMAIN/{} \
             -w $TARGETDIR/3-all-subdomain-live-scheme.txt:HOST \
             -w $TARGETDIR/3-all-subdomain-live-socket.txt:DOMAIN \
@@ -529,10 +529,9 @@ ssrftest(){
             -H "$CUSTOMHEADER" \
             -H "User-Agent: Mozilla/5.0 \(Windows NT 10.0; Win64; x64; rv:71.0\) Gecko/20100101 Firefox/71.0" \
             -mode pitchfork > /dev/null
-    echo "[$(date | awk '{ print $4}')] [SSRF-2] done."
     echo
     if [[ -s "$CUSTOMSSRFQUERYLIST" ]]; then
-      echo "[$(date | awk '{ print $4}')] [SSRF-3] fuzz original endpoints from wayback and fetched data"
+      echo "[$(date | awk '{ print $4}')] [SSRF] fuzz original endpoints from wayback and fetched data"
       axiom-scan $CUSTOMSSRFQUERYLIST -m ffuf-hostserver -s \
             -ignore-body \
             -timeout 1 \
@@ -544,7 +543,7 @@ ssrftest(){
             -o $TARGETDIR/ffuf/ssrf-matched-url.csv \
             > /dev/null
 
-      echo "[$(date | awk '{ print $4}')] [SSRF-3] done."
+      echo "[$(date | awk '{ print $4}')] [SSRF] done."
       echo
     fi
   fi
