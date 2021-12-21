@@ -527,7 +527,6 @@ ssrftest(){
             -t 1 \
             -p 0.5 \
             -H "$CUSTOMHEADER" \
-            -H "User-Agent: Mozilla/5.0 \(Windows NT 10.0; Win64; x64; rv:71.0\) Gecko/20100101 Firefox/71.0" \
             -mode pitchfork > /dev/null
     echo
     if [[ -s "$CUSTOMSSRFQUERYLIST" ]]; then
@@ -538,7 +537,6 @@ ssrftest(){
             -t 1 \
             -p 0.5 \
             -H "$CUSTOMHEADER" \
-            -H "User-Agent: Mozilla/5.0 \(Windows; U; Windows NT 6.1; en-us\) AppleWebKit/534.50 \(KHTML, like Gecko\) Version/5.1 Safari/534.50" \
             -wL $TARGETDIR/_listen_server_file \
             -o $TARGETDIR/ffuf/ssrf-matched-url.csv \
             > /dev/null
@@ -561,7 +559,6 @@ lfitest(){
             -t 2 \
             -p 0.5 \
             -H "$CUSTOMHEADER" \
-            -H "User-Agent:Mozilla/5.0 \(Macintosh\; Intel Mac OS X 11_2_1\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/88.0.4324.192 Safari/537.36" \
             -wL $CUSTOMLFIQUERYLIST \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
@@ -644,7 +641,6 @@ ffufbrute(){
           -timeout 7 \
           -mc 200,201,202,401 \
           -H "$CUSTOMHEADER" \
-          -H "User-Agent:Mozilla/5.0 \(Macintosh; Intel Mac OS X 11_2_1\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/88.0.4324.192 Safari/537.36" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
           -o $TARGETDIR/ffuf/directory-brute.csv
 
@@ -661,7 +657,6 @@ apibruteforce(){
           -t 2 \
           -p 0.5 \
           -H "$CUSTOMHEADER" \
-          -H "User-Agent: Mozilla/5.0 \(Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4\) Gecko/2008102920 Firefox/3.0.4" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
           -o $TARGETDIR/ffuf/api-brute.csv
     echo "[$(date | awk '{ print $4}')] API bruteforce done"
