@@ -156,15 +156,11 @@ checkwaybackurls(){
       GREPSCOPE="https?://(([[:alnum:][:punct:]]+)+)?[.]?$1"
   fi
 
-  getgau $1 $GREPSCOPE &
-  PID_GAU=$!
+  getgau $1 $GREPSCOPE
 
-  getwaybackurl $1 $GREPSCOPE &
-  PID_WAYBACK=$!
+  getwaybackurl $1 $GREPSCOPE
 
   getgithubendpoints $1 $GREPSCOPE
-
-  wait $PID_GAU $PID_WAYBACK
 
   sort -u $TARGETDIR/tmp/gau_output.txt $TARGETDIR/tmp/waybackurls_output.txt $TARGETDIR/tmp/github-endpoints_out.txt -o $TARGETDIR/wayback/wayback_output.txt
 
