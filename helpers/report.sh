@@ -49,11 +49,9 @@ openports(){
     # add open ports
     if [ -s ${TARGETDIR}/masscan_output.gnmap ]; then
         echo '<div>'
-        echo "<h4>Open ports found:</h4>"
-        ports=$(grep "^Host" ${TARGETDIR}/masscan_output.gnmap | sort -k2n -k5n | cut -d ' ' -f2,4)
-        for port in "${ports}"; do
-            echo "<p style='color: #1181C8; font-size: 10px;'>"${port}"</p>"
-        done
+            echo "<h4>Open ports found:</h4>"
+            ports=$(grep "^Host" ${TARGETDIR}/masscan_output.gnmap | sort -k2n -k5n | cut -d ' ' -f2,4)
+            echo "<pre style='color: #1181C8; font-size: 10px;'><code>"${ports}"</code></pre>"
         echo '</div>'
     else
         echo "<h3>There are no open ports found.</h3>"
@@ -63,10 +61,9 @@ openports(){
 listenserverlogs(){
     # add listen server logs
     if [ -s ${TARGETDIR}/_listen_server_out.log ]; then
+        echo "<h4>Listen server out</h4>"
         srvlogs=$(< $TARGETDIR/_listen_server_out.log jq -r '.protocol,."remote-address",."raw-request"')
-        for srvlog in $srvlogs; do
-            echo "<pre style='font-size: 11px;'><code>${srvlog}</code></pre>"
-        done
+        echo "<pre style='font-size: 9px;'><code>"${srvlogs}"</code></pre>"
     fi
 }
 
