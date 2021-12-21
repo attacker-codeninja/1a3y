@@ -65,7 +65,7 @@ listenserverlogs(){
     if [ -s ${TARGETDIR}/_listen_server_out.log ]; then
         srvlogs=$(< $TARGETDIR/_listen_server_out.log jq -r '.protocol,."remote-address",."raw-request"')
         for srvlog in $srvlogs; do
-            echo "<p style='font-size: 11px;'>${srvlog}</p>"
+            echo "<pre style='font-size: 11px;'><code>${srvlog}</code></pre>"
         done
     fi
 }
