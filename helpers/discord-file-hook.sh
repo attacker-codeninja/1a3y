@@ -6,4 +6,4 @@
 
 
 file="$@"
-curl -v -H "Content-Type: multipart/form-data" -X POST -F file=@$file $DISCORDWEBHOOKURL
+curl -v -H "Content-Type: multipart/form-data" -X POST -F file=@"${file}" $DISCORDWEBHOOKURL
