@@ -142,7 +142,7 @@ getgau(){
 }
 getgithubendpoints(){
   echo "github-endpoints.py..."
-  github-endpoints -d $1 -t $GITHUBTOKEN | sort -u | grep -E "$1" | qsreplace -a > $TARGETDIR/tmp/github-endpoints_out.txt || true
+  github-endpoints -d $1 -t $GITHUBTOKEN | sort -u | grep "$1" | qsreplace -a > $TARGETDIR/tmp/github-endpoints_out.txt || true
   echo "github-endpoints done."
 }
 
