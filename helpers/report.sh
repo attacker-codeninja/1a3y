@@ -62,8 +62,8 @@ openports(){
 
 listenserverlogs(){
     # add listen server logs
-    if [ -s ${TARGETDIR}/_listen_server.log ]; then
-        srvlogs=$(< ${TARGETDIR}/_listen_server.log jq -r '.protocol,."remote-address",."raw-request"')
+    if [ -s ${TARGETDIR}/_listen_server_out.log ]; then
+        srvlogs=$(< $TARGETDIR/_listen_server_out.log jq -r '.protocol,."remote-address",."raw-request"')
         for srvlog in $srvlogs; do
             echo "<p style='font-size: 11px;'>${srvlog}</p>"
         done
