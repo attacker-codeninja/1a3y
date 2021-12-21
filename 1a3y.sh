@@ -363,10 +363,10 @@ nucleitest(){
     NUCLEI_IN=$TARGETDIR/3-all-subdomain-live-scheme.txt
     echo "[$(date | awk '{ print $4}')] [nuclei] technologies testing..."
     # use -c for maximum templates processed in parallel
-    axiom-scan $NUCLEI_IN -m nuclei \
-        -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -retries 3 \
-        -o $TARGETDIR/tmp/nuclei_technology_out.txt \
-            -w /home/op/nuclei-templates/technologies/
+    # axiom-scan $NUCLEI_IN -m nuclei \
+    #     -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -retries 3 \
+    #     -o $TARGETDIR/tmp/nuclei_technology_out.txt \
+    #         -w /home/op/nuclei-templates/technologies/
 
     echo "[$(date | awk '{ print $4}')] [nuclei] CVE testing..."
           axiom-scan $NUCLEI_IN -m nuclei-distributed \
