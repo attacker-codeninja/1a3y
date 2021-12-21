@@ -126,7 +126,7 @@ enumeratesubdomains(){
 getwaybackurl(){
   echo "waybackurls..."
   axiom-scan $TARGETDIR/enumerated-subdomains.txt -m waybackurls -o $TARGETDIR/tmp/waybackurls_raw_output.txt
-  grep "$2" $TARGETDIR/tmp/waybackurls_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/waybackurls_output.txt
+  grep "$1" $TARGETDIR/tmp/waybackurls_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/waybackurls_output.txt
   echo "waybackurls done."
 }
 getgau(){
@@ -137,12 +137,12 @@ getgau(){
   fi
   # gau -subs mean include subdomains
   axiom-scan $TARGETDIR/enumerated-subdomains.txt -m gau $SUBS -o $TARGETDIR/tmp/gau_raw_output.txt
-  grep "$2" $TARGETDIR/tmp/gau_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/gau_output.txt
+  grep "$1" $TARGETDIR/tmp/gau_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/gau_output.txt
   echo "gau done."
 }
 getgithubendpoints(){
   echo "github-endpoints.py..."
-  github-endpoints -d $1 -t $GITHUBTOKEN | sort -u | grep -E "$2" | qsreplace -a > $TARGETDIR/tmp/github-endpoints_out.txt || true
+  github-endpoints -d $1 -t $GITHUBTOKEN | sort -u | grep -E "$1" | qsreplace -a > $TARGETDIR/tmp/github-endpoints_out.txt || true
   echo "github-endpoints done."
 }
 
