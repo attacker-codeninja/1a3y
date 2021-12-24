@@ -7,4 +7,4 @@
 
 
 TWITTERPOSTLINK="$@"
-curl -H "Content-Type: application/json" -X POST -d '{ "username":"@1a3ysh tweeted", "content":""'"${TWITTERPOSTLINK}"'" }' https://discord.com/api/webhooks/921013233744228362/4ZRmZNxu98f7XkOTkwA07UlGJfO12JqlYBuljPpMnX8wNUBzu9gkH6B47-1yNR_i6EYH
+curl -H "Content-Type: application/json" -X POST -d '{"username":"@1a3ysh tweeted", "content":"'"${TWITTERPOSTLINK}"'"}' https://discord.com/api/webhooks/921013233744228362/4ZRmZNxu98f7XkOTkwA07UlGJfO12JqlYBuljPpMnX8wNUBzu9gkH6B47-1yNR_i6EYH
