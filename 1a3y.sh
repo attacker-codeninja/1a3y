@@ -508,6 +508,7 @@ custompathlist(){
 # https://notifybugme.medium.com/finding-ssrf-by-full-automation-7d2680091d68
 # https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF
 # https://cobalt.io/blog/from-ssrf-to-port-scanner
+# https://blog.assetnote.io/2021/01/13/blind-ssrf-chains
 ssrftest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
