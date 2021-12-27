@@ -62,7 +62,7 @@ listenserverlogs(){
     # add listen server logs
     if [ -s ${TARGETDIR}/_listen_server_out.log ]; then
         echo "<h4>Listen server out</h4>"
-        srvlogs=$(< $TARGETDIR/_listen_server_out.log jq -r '.protocol,."remote-address",."raw-request"')
+        srvlogs=$(< $TARGETDIR/_listen_server_out.log jq -r '.protocol,."remote-address",."raw-request"' | grep -A 11 -F "http")
         echo "<pre style='font-size: 9px;'><code>""${srvlogs}""</code></pre>"
     fi
 }
