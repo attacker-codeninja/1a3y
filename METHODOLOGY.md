@@ -9,10 +9,13 @@
 6. Try to find file upload vulnerabilities
 7. 
 8. Perform Google, Trello, Atlassian, Github, Bitbucket dorking to find out interesting params based on screenshots (site: inurl:)
-5. Check JS sources for credentials, API endpoints
+5. Check JS sources for credentials, API endpoints using `secretfinder`
 6. Investigate `XHR` requests, fuzz parameters and variables
 7. Check exploit-db.com for target-specific CVE based on `nmap`/`masscan` output
-8. GET/POST Bruteforce for directories: fuzbo0oM-top10000 --> raft --> target specific using `kalilinux/kali-rolling` image under docker (`dirb`, `gobuster`, etc)
+8. GET/POST Bruteforce for directories: fuzbo0oM-top10000 --> raft --> target specific using `kalilinux/kali-rolling` image under docker (`dirb`, `gobuster`, `ffuf`, etc):
+```bash
+dirb "http://51.75.168.24" "/usr/share/wordlists/dirb/common.txt"
+```
 9. Continue bruteforcing using custom Headers (X-Custom-IP-Authorization: 127.0.0.1; X-Original-URL:)
 10. Try bypass 401/403 errors using [notable](https://github.com/filedescriptor/Unicode-Mapping-on-Domain-names) methods (`%23`, `/%2e/`, `admin.php%2500.md` etc)
 11. Look for XSS [xsscrapy.py](https://github.com/DanMcInerney/xsscrapy) or [XSSTRON](https://github.com/RenwaX23/XSSTRON)
