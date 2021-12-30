@@ -26,6 +26,7 @@ done
 1. `docker start 2b4aa97a31bb`
 2. `docker exec -it 2b4aa97a31bb bash`
 3. execute bash script with `axiom-scan` onboard here
+4.  copy file from local to container`docker cp "1a3y.sh" 2b4aa97a31bb:/root/1a3y/`
 
 
 
