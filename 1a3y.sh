@@ -76,7 +76,7 @@ enumeratesubdomains(){
   elif [ "$list" = "1" ]; then
     cp $1 $TARGETDIR/enumerated-subdomains.txt
   else
-    echo "[$(date | awk '{ print $4}')] Enumerating all known domains using:"
+    echo "[$(date +%H:%M:%S)] Enumerating all known domains using:"
 
     # Passive subdomain enumeration
     echo "subfinder..."
@@ -120,7 +120,7 @@ enumeratesubdomains(){
       error_handler
     fi
   fi
-  echo "[$(date | awk '{ print $4}')] enumeration done."
+  echo "[$(date +%H:%M:%S)] enumeration done."
 }
 
 getwaybackurl(){
@@ -148,7 +148,7 @@ getgithubendpoints(){
 
 checkwaybackurls(){
   echo
-  echo "[$(date | awk '{ print $4}')] get wayback machine stuff..."
+  echo "[$(date +%H:%M:%S)] get wayback machine stuff..."
   GREPSCOPE=
   if [[ -n "$single" ]]; then
       GREPSCOPE="https?://(w{3}.)?[.]?$1"
@@ -174,7 +174,7 @@ checkwaybackurls(){
     < $TARGETDIR/wayback/wayback_output.txt unfurl format %S | sort -u -o $TARGETDIR/wayback-subdomains-wordlist.txt
     sort -u $CUSTOMSUBDOMAINSWORDLIST $TARGETDIR/wayback-subdomains-wordlist.txt -o $CUSTOMSUBDOMAINSWORDLIST
   fi
-  echo "[$(date | awk '{ print $4}')] wayback machine done."
+  echo "[$(date +%H:%M:%S)] wayback machine done."
 }
 
 sortsubdomains(){
@@ -186,22 +186,22 @@ sortsubdomains(){
 
 dnsbruteforcing(){
   if [[  -n "$wildcard" && -n "$vps" ]]; then
-    echo "[$(date | awk '{ print $4}')] puredns bruteforce..."
+    echo "[$(date +%H:%M:%S)] puredns bruteforce..."
     # https://sidxparab.gitbook.io/subdomain-enumeration-guide/active-enumeration/dns-bruteforcing
     axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 100000 -l 5000 -q -o $TARGETDIR/puredns-bruteforce-output.txt
     sort -u $TARGETDIR/puredns-bruteforce-output.txt $TARGETDIR/1-real-subdomains.txt -o $TARGETDIR/1-real-subdomains.txt
-    echo "[$(date | awk '{ print $4}')] puredns bruteforce done."
+    echo "[$(date +%H:%M:%S)] puredns bruteforce done."
   fi
 }
 
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
-    echo "[$(date | awk '{ print $4}')] dnsgen..."
+    echo "[$(date +%H:%M:%S)] dnsgen..."
     axiom-scan $TARGETDIR/1-real-subdomains.txt -m dnsgen -o $TARGETDIR/tmp/dnsgen_out.txt
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
 
     sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt -o $TARGETDIR/2-all-subdomains.txt
-    echo "[$(date | awk '{ print $4}')] dnsgen done"
+    echo "[$(date +%H:%M:%S)] dnsgen done"
   fi
 }
 
@@ -213,23 +213,23 @@ dnsprobing(){
   # check we test hostname or IP
   if [[ -n "$ip" ]]; then
     echo
-    echo "[$(date | awk '{ print $4}')] [dnsx] try to get PTR records"
+    echo "[$(date +%H:%M:%S)] [dnsx] try to get PTR records"
     echo $1 > $TARGETDIR/dnsprobe_ip.txt
     echo $1 | dnsx -silent -ptr -resp-only -o $TARGETDIR/dnsprobe_subdomains.txt # also try to get subdomains
   elif [[ -n "$cidr" ]]; then
-    echo "[$(date | awk '{ print $4}')] [dnsx] try to get PTR records"
+    echo "[$(date +%H:%M:%S)] [dnsx] try to get PTR records"
     cp  $TARGETDIR/enumerated-subdomains.txt $TARGETDIR/dnsprobe_ip.txt
     axiom-scan $TARGETDIR/dnsprobe_ip.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -ptr -resp-only -o $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$single" ]]; then
-    echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
+    echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
     echo $1 | dnsx -silent -retry 2 -a -resp-only -o $TARGETDIR/dnsprobe_ip.txt
     echo $1 > $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$list" ]]; then
-      echo "[$(date | awk '{ print $4}')] [massdns] probing and wildcard sieving..."
+      echo "[$(date +%H:%M:%S)] [massdns] probing and wildcard sieving..."
       axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
       # # additional resolving because shuffledns/pureDNS missing IP on output
       echo
-      echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
+      echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
       # -t mean cuncurrency
       axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
@@ -238,11 +238,11 @@ dnsprobing(){
       cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
       cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   else
-      echo "[$(date | awk '{ print $4}')] [puredns] massdns probing with wildcard sieving..."
+      echo "[$(date +%H:%M:%S)] [puredns] massdns probing with wildcard sieving..."
       axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
       # additional resolving because shuffledns missing IP on output
       echo
-      echo "[$(date | awk '{ print $4}')] [dnsx] getting hostnames and its A records..."
+      echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
       # -t mean cuncurrency
       axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
@@ -251,12 +251,12 @@ dnsprobing(){
       cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
       cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   fi
-  echo "[$(date | awk '{ print $4}')] [dnsx] done."
+  echo "[$(date +%H:%M:%S)] [dnsx] done."
 }
 
 checkhttprobe(){
   echo
-  echo "[$(date | awk '{ print $4}')] [httpx] Starting http probe testing..."
+  echo "[$(date +%H:%M:%S)] [httpx] Starting http probe testing..."
   # resolve IP and hosts using socket address style for chromium, nuclei, gospider, ssrf, lfi and bruteforce
   if [[ -n "$ip" ]]; then
     $HTTPXCALL -status-code -l $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt
@@ -282,7 +282,7 @@ checkhttprobe(){
 
       if [[ ( -n "$alt" || -n "$vps" ) && -s "$TARGETDIR"/dnsprobe_ip.txt ]]; then
         echo
-        echo "[$(date | awk '{ print $4}')] [math Mode] finding math Mode of the IP numbers"
+        echo "[$(date +%H:%M:%S)] [math Mode] finding math Mode of the IP numbers"
         MODEOCTET=$(cut -f1 -d '.' $TARGETDIR/dnsprobe_ip.txt | sort -n | uniq -c | sort | tail -n1 | xargs)
         ISMODEOCTET1=$(echo $MODEOCTET | awk '{ print $1 }')
         if ((ISMODEOCTET1 > 1)); then
@@ -306,26 +306,26 @@ checkhttprobe(){
 
           fi
         fi
-        echo "[$(date | awk '{ print $4}')] [math Mode] done."
+        echo "[$(date +%H:%M:%S)] [math Mode] done."
       fi
   fi
-  echo "[$(date | awk '{ print $4}')] [httpx] done."
+  echo "[$(date +%H:%M:%S)] [httpx] done."
 }
 
 bypass403test(){
   echo
-  echo "[$(date | awk '{ print $4}')] [bypass403] Try bypass 4xx..."
+  echo "[$(date +%H:%M:%S)] [bypass403] Try bypass 4xx..."
   if [ -s $TARGETDIR/4xx-all-subdomain-live-scheme.txt ]; then
     # xargs -n 1 -I {} bypass-403 "{}" "" < "$TARGETDIR/4xx-all-subdomain-live-scheme.txt"
     interlace --silent -tL "$TARGETDIR/4xx-all-subdomain-live-scheme.txt" -threads 50 -c "bypass-403 _target_ ''" | grep -E "\[2[0-9]{2}\]" | tee $TARGETDIR/4xx-bypass-output.txt
   fi
-  echo "[$(date | awk '{ print $4}')] [bypass403] done."
+  echo "[$(date +%H:%M:%S)] [bypass403] done."
 }
 
 gospidertest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
-    echo "[$(date | awk '{ print $4}')] [gospider] Web crawling..."
+    echo "[$(date +%H:%M:%S)] [gospider] Web crawling..."
     axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider 1> /dev/null
     # combine the results and filter out of scope
     cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
@@ -339,17 +339,17 @@ gospidertest(){
         < $TARGETDIR/gospider/gospider_out.txt unfurl --unique domains | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" | sort -u | \
                       $HTTPXCALL >> $TARGETDIR/3-all-subdomain-live-scheme.txt
     fi
-    echo "[$(date | awk '{ print $4}')] [gospider] done."
+    echo "[$(date +%H:%M:%S)] [gospider] done."
   fi
 }
 
 # async ability for execute chromium
 screenshots(){
   if [ -s "$TARGETDIR"/3-all-subdomain-live-scheme.txt ]; then
-    echo "[$(date | awk '{ print $4}')] [screenshot] starts..."
+    echo "[$(date +%H:%M:%S)] [screenshot] starts..."
     mkdir "$TARGETDIR"/screenshots
     axiom-scan "$TARGETDIR/3-all-subdomain-live-scheme.txt" -m gowitness -X 1280 -Y 720 -o "${TARGETDIR}"/screenshots
-    echo "[$(date | awk '{ print $4}')] [screenshot] done."
+    echo "[$(date +%H:%M:%S)] [screenshot] done."
   fi
 }
 
@@ -357,20 +357,20 @@ nucleitest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
     NUCLEI_IN=$TARGETDIR/3-all-subdomain-live-scheme.txt
-    echo "[$(date | awk '{ print $4}')] [nuclei] technologies testing..."
+    echo "[$(date +%H:%M:%S)] [nuclei] technologies testing..."
     # use -c for maximum templates processed in parallel
     # axiom-scan $NUCLEI_IN -m nuclei \
     #     -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" -retries 3 \
     #     -o $TARGETDIR/tmp/nuclei_technology_out.txt \
     #         -w /home/op/nuclei-templates/technologies/
 
-    echo "[$(date | awk '{ print $4}')] [nuclei] CVE testing..."
+    echo "[$(date +%H:%M:%S)] [nuclei] CVE testing..."
           axiom-scan $NUCLEI_IN -m nuclei-distributed \
               -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
               -iserver "https://$LISTENSERVER" \
               -o $TARGETDIR/nuclei/nuclei_out.txt
 
-    echo "[$(date | awk '{ print $4}')] [nuclei] done"
+    echo "[$(date +%H:%M:%S)] [nuclei] done"
   fi
 }
 
@@ -384,7 +384,7 @@ custompathlist(){
   < $TARGETDIR/3-all-subdomain-live-scheme.txt unfurl format '%d:%P' | sed "s/:$//" | tee $TARGETDIR/3-all-subdomain-live-socket.txt |  sed -E "s/:([[:digit:]]+)?$//" | sort -u > $TARGETDIR/3-all-subdomain-live.txt
 
   echo
-  echo "[$(date | awk '{ print $4}')] Prepare custom lists"
+  echo "[$(date +%H:%M:%S)] Prepare custom lists"
   if [[ -n "$mad" ]]; then
     sort -u $TARGETDIR/wayback/wayback_output.txt $TARGETDIR/gospider/gospider_out.txt -o $RAWFETCHEDLIST
   else
@@ -468,26 +468,26 @@ custompathlist(){
 
         # test means if linkfinder did not provide any output secretfinder testing makes no sense
         if [ -s $TARGETDIR/tmp/js-list.txt ]; then
-            echo "$(date | awk '{ print $4}')] secretfinder"
+            echo "$(date +%H:%M:%S)] secretfinder"
             # https://github.com/m4ll0k/SecretFinder/issues/20
             axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/secretfinder/
             cat $TARGETDIR/secretfinder/* > $TARGETDIR/tmp/secretfinder_out.txt
-            echo "$(date | awk '{ print $4}')] done"
+            echo "$(date +%H:%M:%S)] done"
         fi
     fi
 
-    echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSSRFQUERYLIST"
+    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMSSRFQUERYLIST"
     # https://github.com/tomnomnom/gf/issues/55
     # https://savannah.gnu.org/bugs/?61664
     xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
 
-    echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMSQLIQUERYLIST"
+    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMSQLIQUERYLIST"
     grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
 
     sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
     sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
 
-    echo "[$(date | awk '{ print $4}')] Prepare custom CUSTOMLFIQUERYLIST"
+    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMLFIQUERYLIST"
     # rabbit hole
     # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
     # 1 limited to lfi pattern
@@ -500,7 +500,7 @@ custompathlist(){
 
     < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
     sort -u $TARGETDIR/ssrf-path-list.txt -o $TARGETDIR/ssrf-path-list.txt
-    echo "[$(date | awk '{ print $4}')] Custom done."
+    echo "[$(date +%H:%M:%S)] Custom done."
   fi
 }
 
@@ -512,12 +512,12 @@ custompathlist(){
 ssrftest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
-    # echo "[$(date | awk '{ print $4}')] [SSRF-1] Headers..."
+    # echo "[$(date +%H:%M:%S)] [SSRF-1] Headers..."
     # ssrf-headers-tool $TARGETDIR/3-all-subdomain-live-scheme.txt $LISTENSERVER > /dev/null
-    # echo "[$(date | awk '{ print $4}')] [SSRF-1] done."
+    # echo "[$(date +%H:%M:%S)] [SSRF-1] done."
     echo
     # https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/burp-parameter-names.txt
-    echo "[$(date | awk '{ print $4}')] [SSRF] Blind probe..."
+    echo "[$(date +%H:%M:%S)] [SSRF] Blind probe..."
         ffuf -s -timeout 1 -ignore-body -u HOST/\?url=https://${LISTENSERVER}/DOMAIN/{} \
             -w $TARGETDIR/3-all-subdomain-live-scheme.txt:HOST \
             -w $TARGETDIR/3-all-subdomain-live-socket.txt:DOMAIN \
@@ -527,7 +527,7 @@ ssrftest(){
             -mode pitchfork > /dev/null
     echo
     if [[ -s "$CUSTOMSSRFQUERYLIST" ]]; then
-      echo "[$(date | awk '{ print $4}')] [SSRF] fuzz original endpoints from wayback and fetched data"
+      echo "[$(date +%H:%M:%S)] [SSRF] fuzz original endpoints from wayback and fetched data"
       axiom-scan $CUSTOMSSRFQUERYLIST -m ffuf-hostserver -s \
             -ignore-body \
             -timeout 1 \
@@ -538,7 +538,7 @@ ssrftest(){
             -o $TARGETDIR/ffuf/ssrf-matched-url.csv \
             > /dev/null
 
-      echo "[$(date | awk '{ print $4}')] [SSRF] done."
+      echo "[$(date +%H:%M:%S)] [SSRF] done."
       echo
     fi
   fi
@@ -549,7 +549,7 @@ ssrftest(){
 lfitest(){
   if [[ -s "$CUSTOMLFIQUERYLIST" ]]; then
     echo
-    echo "[$(date | awk '{ print $4}')] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
+    echo "[$(date +%H:%M:%S)] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
       axiom-scan $LFIPAYLOAD -m ffuf-hostpath -s \
             -timeout 5 \
             -mr "root:x" \
@@ -559,7 +559,7 @@ lfitest(){
             -wL $CUSTOMLFIQUERYLIST \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
-    echo "[$(date | awk '{ print $4}')] [LFI] done."
+    echo "[$(date +%H:%M:%S)] [LFI] done."
   fi
 }
 
@@ -567,10 +567,10 @@ sqlmaptest(){
   if [[ -s "$CUSTOMSQLIQUERYLIST" ]]; then
     # perform the sqlmap
     echo
-    echo "[$(date | awk '{ print $4}')] [sqlmap] SQLi testing..."
+    echo "[$(date +%H:%M:%S)] [sqlmap] SQLi testing..."
     # turn on more tests by swithing: --risk=3 --level=5
     axiom-scan $CUSTOMSQLIQUERYLIST -m sqlmap --output-dir=$TARGETDIR/sqlmap/
-    echo "[$(date | awk '{ print $4}')] [sqlmap] done."
+    echo "[$(date +%H:%M:%S)] [sqlmap] done."
   fi
 }
 
@@ -580,13 +580,13 @@ sqlmaptest(){
 # }
 masscantest(){
   if [ -s $TARGETDIR/dnsprobe_ip.txt ]; then
-    echo "[$(date | awk '{ print $4}')] [masscan] Looking for open ports..."
+    echo "[$(date +%H:%M:%S)] [masscan] Looking for open ports..."
     # max-rate for accuracy
     # 25/587-smtp, 110/995-pop3, 143/993-imap, 445-smb, 3306-mysql, 3389-rdp, 5432-postgres, 5900/5901-vnc, 27017-mongodb
     # masscan -p0-65535 | -p0-1000,2375,3306,3389,4990,5432,5900,6379,6066,8080,8383,8500,8880,8983,9000,27017 -iL $TARGETDIR/dnsprobe_ip.txt --rate 1000 --open-only -oG $TARGETDIR/masscan_output.gnmap
     axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 500
     sleep 1
-    echo "[$(date | awk '{ print $4}')] [masscan] done."
+    echo "[$(date +%H:%M:%S)] [masscan] done."
   fi
 }
 
@@ -596,7 +596,7 @@ nmap_nse(){
   # https://gist.github.com/storenth/b419dc17d2168257b37aa075b7dd3399
   # https://youtu.be/La3iWKRX-tE?t=1200
   # https://medium.com/@noobhax/my-recon-process-dns-enumeration-d0e288f81a8a
-  echo "[$(date | awk '{ print $4}')] [nmap] scanning..."
+  echo "[$(date +%H:%M:%S)] [nmap] scanning..."
   mkdir $TARGETDIR/nmap
   while read line; do
     IP=$(echo $line | awk '{ print $4 }')
@@ -619,7 +619,7 @@ nmap_nse(){
     echo
     echo
   done < $TARGETDIR/masscan_output.gnmap
-  echo "[$(date | awk '{ print $4}')] [nmap] done."
+  echo "[$(date +%H:%M:%S)] [nmap] done."
 }
 
 ffufbrute(){
@@ -627,7 +627,7 @@ ffufbrute(){
     # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
     # interlace --silent -tL $TARGETDIR/3-all-subdomain-live-scheme.txt -threads 10 -c "ffuf -timeout 7 -u _target_/FUZZ -mc 200,201,202,401 -fs 0 \-w $CUSTOMFFUFWORDLIST -t $NUMBEROFTHREADS -p 0.5-2.5 -recursion -recursion-depth 2 -H \"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36\" \-o $TARGETDIR/ffuf/_cleantarget_.html -of html -or true"
 
-    echo "[$(date | awk '{ print $4}')] Start directory bruteforce using ffuf..."
+    echo "[$(date +%H:%M:%S)] Start directory bruteforce using ffuf..."
     # directory bruteforce
     # ffuf -c stands for colorized, -s for silent mode
     # -t for threads, -p delay
@@ -641,12 +641,12 @@ ffufbrute(){
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
           -o $TARGETDIR/ffuf/directory-brute.csv
 
-    echo "[$(date | awk '{ print $4}')] directory bruteforce done"
+    echo "[$(date +%H:%M:%S)] directory bruteforce done"
 }
 
 apibruteforce(){
     echo
-    echo "[$(date | awk '{ print $4}')] Start API endpoints bruteforce using ffuf..."
+    echo "[$(date +%H:%M:%S)] Start API endpoints bruteforce using ffuf..."
     # API bruteforce
     axiom-scan $APIWORDLIST -m ffuf-hostpath -s \
           -timeout 5 \
@@ -656,7 +656,7 @@ apibruteforce(){
           -H "$CUSTOMHEADER" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
           -o $TARGETDIR/ffuf/api-brute.csv
-    echo "[$(date | awk '{ print $4}')] API bruteforce done"
+    echo "[$(date +%H:%M:%S)] API bruteforce done"
 }
 
 recon(){
