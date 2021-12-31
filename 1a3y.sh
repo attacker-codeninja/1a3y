@@ -436,7 +436,7 @@ custompathlist(){
 
 linkfindercrawling(){
     if [ -s $TARGETDIR/tmp/js-list.txt ]; then
-      echo "[$(date +%H:%M:%S)] linkfindercrawling"
+      echo "[$(date +%H:%M:%S)] linkfinder crawling"
       sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
 
       echo "[$(date +%H:%M:%S)] linkfinder"
@@ -455,19 +455,7 @@ linkfindercrawling(){
 
           echo "[debug] linkfinder: concat source URL with found path from this URL"
           # [https://54.68.201.132/static/main.js] /api/widget_settings/metadata --> https://54.68.201.132/api/widget_settings/metadata
-          # dynamic sensor
-          BAR='##############################'
-          FILL='------------------------------'
-          totalLines=$(wc -l "$TARGETDIR"/linkfinder/linkfinder_out.txt | awk '{print $1}')  # num. lines in file
-          barLen=30
-          count=0
           while read line; do
-            # update progress bar
-            count=$(($count + 1))
-            percent=$((($count * 100 / $totalLines * 100) / 100))
-            i=$(($percent * $barLen / 100))
-            echo -ne "\r[${BAR:0:$i}${FILL:$i:barLen}] $count/$totalLines ($percent%)"
-
               url=$(echo "$line" | sed 's/[[]//;s/[]]//' | awk '{ print $1 }' | unfurl format '%s://%d')
               path2=$(echo "$line" | awk '{ print $2 }' | grep -oE "^/{1}[[:alpha:]]+[.]?(([[:alnum:][:punct:]]+)+)" || true)
               if [[ -n "$path2" ]]; then
@@ -493,11 +481,29 @@ linkfindercrawling(){
             fi
 
             if [ -s $TARGETDIR/tmp/linkfinder-js-list.txt ]; then
-              sort -u $TARGETDIR/tmp/linkfinder-js-list.txt -o $TARGETDIR/tmp/linkfinder-js-list.txt
-              echo "[debug] linkfinder: filter out scope"
-              # filter out in scope
-                xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder-js-list.txt | $CHECKHTTPX2XX -nfs >> $TARGETDIR/tmp/js-list.txt || true
-                sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
+                sort -u $TARGETDIR/tmp/linkfinder-js-list.txt -o $TARGETDIR/tmp/linkfinder-js-list.txt
+                # filter out in scope
+                xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder-js-list.txt | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list-2.txt || true
+
+                if [ -s "$TARGETDIR"/tmp/js-list-2.txt ]; then
+                    sort -u $TARGETDIR/tmp/js-list-2.txt -o $TARGETDIR/tmp/js-list-2.txt
+                    # call linkfinder with new js-list-2
+                    echo "[$(date +%H:%M:%S)] linkfinder-2"
+                    axiom-scan $TARGETDIR/tmp/js-list-2.txt -m linkfinder -o $TARGETDIR/linkfinder_2/
+                    if [ -s $TARGETDIR/linkfinder_2/linkfinder_out.txt ]; then
+                        sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder_2/linkfinder_out.txt
+                        echo "[$(date +%H:%M:%S)] linkfinder-2 done"
+
+                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder_2_js_list.txt || true
+                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
+
+                        if [ -s $TARGETDIR/tmp/linkfinder_2_js_list.txt ]; then
+                            xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder_2_js_list.txt | $CHECKHTTPX2XX -nfs >> $TARGETDIR/tmp/js-list-2.txt || true
+                            # final js list after 2 recursion of linkfinder
+                            [ -s $TARGETDIR/tmp/js-list-2.txt ] && sort -u $TARGETDIR/tmp/js-list-2.txt $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
+                        fi
+                    fi
+                fi
             fi
         fi
 
