@@ -411,9 +411,10 @@ custompathlist(){
 
         sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
 
-        echo "linkfinder"
+        echo "[$(date +%H:%M:%S)] linkfinder"
         axiom-scan $TARGETDIR/tmp/js-list.txt -m linkfinder -o $TARGETDIR/linkfinder/
         sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
+        echo "[$(date +%H:%M:%S)] linkfinder done"
 
         if [ -s $TARGETDIR/linkfinder/linkfinder_out.txt ]; then
           sort -u $TARGETDIR/linkfinder/linkfinder_out.txt -o $TARGETDIR/linkfinder/linkfinder_out.txt
@@ -423,6 +424,7 @@ custompathlist(){
             cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
 
             echo "[debug-2] linkfinder: concat source URL with found path from this URL"
+            # [https://54.68.201.132/static/main.js] /api/widget_settings/metadata --> https://54.68.201.132/api/widget_settings/metadata
             # dynamic sensor
             BAR='##############################'
             FILL='------------------------------'
