@@ -452,11 +452,11 @@ custompathlist(){
                   grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
                   # prepare additional path for bruteforce
                   if [[ -n "$brute" ]]; then
-                      echo "[debug-2] linkfinder: bruteforce collected paths"
+                      echo "[$(date +%H:%M:%S)] bruteforce collected paths"
                       grep -vioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
-                      httpx -silent -no-color -random-agent -status-code -content-length -nfs -threads "$NUMBEROFTHREADS" -rate-limit $REQUESTSPERSECOND -l $TARGETDIR/tmp/linkfinder-path-list.txt -o $TARGETDIR/tmp/linkfinder-path-list-brute-output.txt
+                      axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt &> /dev/null
+                      echo "[$(date +%H:%M:%S)] bruteforce done"
                   fi
-
               fi
 
               if [ -s $TARGETDIR/tmp/linkfinder-js-list.txt ]; then
