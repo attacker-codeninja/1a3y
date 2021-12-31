@@ -401,72 +401,104 @@ custompathlist(){
     sort -u $CUSTOMFFUFWORDLIST -o $CUSTOMFFUFWORDLIST
   fi
 
-  if [[ -n "$fuzz" ]]; then
     # js & json 
     grep -ioE "(([[:alnum:][:punct:]]+)+)[.](js|json)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list.txt || true
     # txt, log & other stuff
-    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $FILTEREDFETCHEDLIST > $TARGETDIR/tmp/juicy-files-list.txt || true
+    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" $FILTEREDFETCHEDLIST > $TARGETDIR/tmp/juicy-files-list.txt || true
 
+    # SSRF list
+    # https://github.com/tomnomnom/gf/issues/55
+    # https://savannah.gnu.org/bugs/?61664
+    xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
+
+    # SQLi list
+    grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
+
+    sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
+    sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
+
+    # LFI list
+    ### rabbit hole start
+    # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
+    ### rabbit hole end
+    # 1 limited to lfi pattern
+    grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST | qsreplace -a > $CUSTOMLFIQUERYLIST || true
+    # 2 limited to [:alnum:]=file.ext pattern
+    grep -oiE -e "(([[:alnum:][:punct:]]+)+)?=(([[:alnum:][:punct:]]+)+)\.(pdf|txt|log|md|php|json|csv|src|bak|old|jsp|sql|zip|xls|dll)" \
+               -e "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST | \
+               grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
+    sort -u $CUSTOMLFIQUERYLIST -o $CUSTOMLFIQUERYLIST
+
+    < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
+    sort -u $TARGETDIR/ssrf-path-list.txt -o $TARGETDIR/ssrf-path-list.txt
+    echo "[$(date +%H:%M:%S)] Custom done."
+}
+
+linkfindercrawling(){
     if [ -s $TARGETDIR/tmp/js-list.txt ]; then
+      echo "[$(date +%H:%M:%S)] linkfindercrawling"
+      sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
 
-        sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
+      echo "[$(date +%H:%M:%S)] linkfinder"
+      axiom-scan $TARGETDIR/tmp/js-list.txt -m linkfinder -o $TARGETDIR/linkfinder/
+      sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
+      echo "[$(date +%H:%M:%S)] linkfinder done"
 
-        echo "[$(date +%H:%M:%S)] linkfinder"
-        axiom-scan $TARGETDIR/tmp/js-list.txt -m linkfinder -o $TARGETDIR/linkfinder/
-        sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
-        echo "[$(date +%H:%M:%S)] linkfinder done"
+      if [ -s $TARGETDIR/linkfinder/linkfinder_out.txt ]; then
+        sort -u $TARGETDIR/linkfinder/linkfinder_out.txt -o $TARGETDIR/linkfinder/linkfinder_out.txt
+        sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/linkfinder/linkfinder_out.txt
 
-        if [ -s $TARGETDIR/linkfinder/linkfinder_out.txt ]; then
-          sort -u $TARGETDIR/linkfinder/linkfinder_out.txt -o $TARGETDIR/linkfinder/linkfinder_out.txt
-          sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/linkfinder/linkfinder_out.txt
+          echo "[debug] linkfinder: search for js|json"
+          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
+          echo "[debug] linkfinder: search for juicy files"
+          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
 
-          echo "[debug-1] linkfinder: search for js|json"
-            cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
+          echo "[debug] linkfinder: concat source URL with found path from this URL"
+          # [https://54.68.201.132/static/main.js] /api/widget_settings/metadata --> https://54.68.201.132/api/widget_settings/metadata
+          # dynamic sensor
+          BAR='##############################'
+          FILL='------------------------------'
+          totalLines=$(wc -l "$TARGETDIR"/linkfinder/linkfinder_out.txt | awk '{print $1}')  # num. lines in file
+          barLen=30
+          count=0
+          while read line; do
+            # update progress bar
+            count=$(($count + 1))
+            percent=$((($count * 100 / $totalLines * 100) / 100))
+            i=$(($percent * $barLen / 100))
+            echo -ne "\r[${BAR:0:$i}${FILL:$i:barLen}] $count/$totalLines ($percent%)"
 
-            echo "[debug-2] linkfinder: concat source URL with found path from this URL"
-            # [https://54.68.201.132/static/main.js] /api/widget_settings/metadata --> https://54.68.201.132/api/widget_settings/metadata
-            # dynamic sensor
-            BAR='##############################'
-            FILL='------------------------------'
-            totalLines=$(wc -l "$TARGETDIR"/linkfinder/linkfinder_out.txt | awk '{print $1}')  # num. lines in file
-            barLen=30
-            count=0
-            while read line; do
-              # update progress bar
-              count=$(($count + 1))
-              percent=$((($count * 100 / $totalLines * 100) / 100))
-              i=$(($percent * $barLen / 100))
-              echo -ne "\r[${BAR:0:$i}${FILL:$i:barLen}] $count/$totalLines ($percent%)"
+              url=$(echo "$line" | sed 's/[[]//;s/[]]//' | awk '{ print $1 }' | unfurl format '%s://%d')
+              path2=$(echo "$line" | awk '{ print $2 }' | grep -oE "^/{1}[[:alpha:]]+[.]?(([[:alnum:][:punct:]]+)+)" || true)
+              if [[ -n "$path2" ]]; then
+                echo "$url$path2" >> $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
+              fi
+          done < $TARGETDIR/linkfinder/linkfinder_out.txt
 
-                url=$(echo "$line" | sed 's/[[]//;s/[]]//' | awk '{ print $1 }' | unfurl format '%s://%d')
-                path2=$(echo "$line" | awk '{ print $2 }' | grep -oE "^/{1}[[:alpha:]]+[.]?(([[:alnum:][:punct:]]+)+)" || true)
-                if [[ -n "$path2" ]]; then
-                  echo "$url$path2" >> $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
+            if [ -s $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt ]; then
+                sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
+                sort -u $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt -o $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
+
+                # prepare additional js/json queries
+                grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
+                grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
+
+                # prepare additional path for bruteforce
+                if [[ -n "$brute" ]]; then
+                    echo "[$(date +%H:%M:%S)] bruteforce collected paths"
+                    grep -vioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
+                    axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt &> /dev/null
+                    echo "[$(date +%H:%M:%S)] bruteforce done"
                 fi
-            done < $TARGETDIR/linkfinder/linkfinder_out.txt
+            fi
 
-              if [ -s $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt ]; then
-                  sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
-                  sort -u $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt -o $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
-                  # prepare additional js/json queries
-                  grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
-                  grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
-                  # prepare additional path for bruteforce
-                  if [[ -n "$brute" ]]; then
-                      echo "[$(date +%H:%M:%S)] bruteforce collected paths"
-                      grep -vioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
-                      axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt &> /dev/null
-                      echo "[$(date +%H:%M:%S)] bruteforce done"
-                  fi
-              fi
-
-              if [ -s $TARGETDIR/tmp/linkfinder-js-list.txt ]; then
-                sort -u $TARGETDIR/tmp/linkfinder-js-list.txt -o $TARGETDIR/tmp/linkfinder-js-list.txt
-                echo "[debug-3] linkfinder: filter out scope"
-                # filter out in scope
-                  xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder-js-list.txt | $CHECKHTTPX2XX -nfs >> $TARGETDIR/tmp/js-list.txt || true
-                  sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
-              fi
+            if [ -s $TARGETDIR/tmp/linkfinder-js-list.txt ]; then
+              sort -u $TARGETDIR/tmp/linkfinder-js-list.txt -o $TARGETDIR/tmp/linkfinder-js-list.txt
+              echo "[debug] linkfinder: filter out scope"
+              # filter out in scope
+                xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder-js-list.txt | $CHECKHTTPX2XX -nfs >> $TARGETDIR/tmp/js-list.txt || true
+                sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
+            fi
         fi
 
         # probe for 2xx juicy files
@@ -485,33 +517,6 @@ custompathlist(){
             echo "$(date +%H:%M:%S)] done"
         fi
     fi
-
-    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMSSRFQUERYLIST"
-    # https://github.com/tomnomnom/gf/issues/55
-    # https://savannah.gnu.org/bugs/?61664
-    xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
-
-    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMSQLIQUERYLIST"
-    grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
-
-    sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
-    sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
-
-    echo "[$(date +%H:%M:%S)] Prepare custom CUSTOMLFIQUERYLIST"
-    # rabbit hole
-    # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
-    # 1 limited to lfi pattern
-    grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST | qsreplace -a > $CUSTOMLFIQUERYLIST || true
-    # 2 limited to [:alnum:]=file.ext pattern
-    grep -oiE -e "(([[:alnum:][:punct:]]+)+)?=(([[:alnum:][:punct:]]+)+)\.(pdf|txt|log|md|php|json|csv|src|bak|old|jsp|sql|zip|xls|dll)" \
-               -e "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST | \
-               grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
-    sort -u $CUSTOMLFIQUERYLIST -o $CUSTOMLFIQUERYLIST
-
-    < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
-    sort -u $TARGETDIR/ssrf-path-list.txt -o $TARGETDIR/ssrf-path-list.txt
-    echo "[$(date +%H:%M:%S)] Custom done."
-  fi
 }
 
 # https://rez0.blog/hacking/2019/11/29/rce-via-imagetragick.html
@@ -686,6 +691,7 @@ recon(){
   if [[ -n "$fuzz" || -n "$brute" ]]; then
     gospidertest $1
     custompathlist $1
+    linkfindercrawling $1
   fi
 
   screenshots $1
