@@ -815,7 +815,6 @@ main(){
   if [[ -n "$brute" ]]; then
     CUSTOMFFUFWORDLIST=$TARGETDIR/tmp/custom_ffuf_wordlist.txt
     touch $CUSTOMFFUFWORDLIST
-    cp $DIRSEARCHWORDLIST $CUSTOMFFUFWORDLIST
   fi
 
   # used to save target specific list for alterations (shuffledns, altdns)
