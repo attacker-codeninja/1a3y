@@ -405,7 +405,7 @@ custompathlist(){
     # js & json 
     grep -ioE "(([[:alnum:][:punct:]]+)+)[.](js|json)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list.txt || true
     # txt, log & other stuff
-    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/juicy-files-list.txt || true
+    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $FILTEREDFETCHEDLIST > $TARGETDIR/tmp/juicy-files-list.txt || true
 
     if [ -s $TARGETDIR/tmp/js-list.txt ]; then
 
@@ -450,6 +450,7 @@ custompathlist(){
                   sort -u $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt -o $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
                   # prepare additional js/json queries
                   grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
+                  grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
                   # prepare additional path for bruteforce
                   if [[ -n "$brute" ]]; then
                       echo "[$(date +%H:%M:%S)] bruteforce collected paths"
@@ -466,6 +467,13 @@ custompathlist(){
                   xargs -I '{}' echo {} < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $TARGETDIR/tmp/linkfinder-js-list.txt | $CHECKHTTPX2XX -nfs >> $TARGETDIR/tmp/js-list.txt || true
                   sort -u $TARGETDIR/tmp/js-list.txt -o $TARGETDIR/tmp/js-list.txt
               fi
+        fi
+
+        # probe for 2xx juicy files
+        if [[ -s $TARGETDIR/tmp/juicy-files-list.txt ]]; then
+          echo "$(date +%H:%M:%S)] juicy files probe"
+          axiom-scan $TARGETDIR/tmp/juicy-files-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/juicy_out.txt &> /dev/null
+          echo "$(date +%H:%M:%S)] juicy done"
         fi
 
         # test means if linkfinder did not provide any output secretfinder testing makes no sense
