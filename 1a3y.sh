@@ -449,9 +449,9 @@ linkfindercrawling(){
           sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/linkfinder/linkfinder_out.txt
 
           echo "[debug] linkfinder: search for js|json"
-          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
+          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder-js-list.txt || true
           echo "[debug] linkfinder: search for juicy files"
-          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
+          cut -f2 -d ' ' $TARGETDIR/linkfinder/linkfinder_out.txt | grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
 
           echo "[debug] linkfinder: concat source URL with found path from this URL"
           # [https://54.68.201.132/static/main.js] /api/widget_settings/metadata --> https://54.68.201.132/api/widget_settings/metadata
@@ -467,8 +467,8 @@ linkfindercrawling(){
                 sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
                 sort -u $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt -o $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
                 # prepare additional js/json queries
-                grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
-                grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
+                grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/linkfinder-js-list.txt || true
+                grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
             fi
 
             if [ -s $TARGETDIR/tmp/linkfinder-js-list.txt ]; then
@@ -486,8 +486,8 @@ linkfindercrawling(){
                         sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder_2/linkfinder_out.txt
                         echo "[$(date +%H:%M:%S)] linkfinder-2 done"
 
-                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder_2_js_list.txt || true
-                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
+                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" > $TARGETDIR/tmp/linkfinder_2_js_list.txt || true
+                        cut -f2 -d ' ' $TARGETDIR/linkfinder_2/linkfinder_out.txt | grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" >> $TARGETDIR/tmp/juicy-files-list.txt || true
 
                         while read line; do
                             url=$(echo "$line" | sed 's/[[]//;s/[]]//' | awk '{ print $1 }' | unfurl format '%s://%d')
@@ -501,8 +501,8 @@ linkfindercrawling(){
                             sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt
                             sort -u $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt -o $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt
                             # prepare additional js/json queries
-                            grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt >> $TARGETDIR/tmp/linkfinder_2_js_list.txt || true
-                            grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
+                            grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json)" $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt >> $TARGETDIR/tmp/linkfinder_2_js_list.txt || true
+                            grep -iE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder_2_concatenated_path_list.txt >> $TARGETDIR/tmp/juicy-files-list.txt || true
                         fi
 
                         if [ -s $TARGETDIR/tmp/linkfinder_2_js_list.txt ]; then
@@ -518,7 +518,7 @@ linkfindercrawling(){
         # prepare additional path for bruteforce
         if [[ -n "$brute" ]]; then
             echo "[$(date +%H:%M:%S)] bruteforce collected paths"
-            grep -vioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json|txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
+            grep -viE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json|txt|log|yaml|env|gz|config|sql|xml|doc)" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
             [[ -s $TARGETDIR/tmp/linkfinder-path-list.txt ]] && axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt &> /dev/null
             echo "[$(date +%H:%M:%S)] bruteforce done"
         fi
