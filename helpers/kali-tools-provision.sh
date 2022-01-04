@@ -1,3 +1,4 @@
 #!/bin/bash -x
 
-apt -y install less wordlists man dirb
+apt -y update && apt upgrade
+apt -y install less wordlists dirb man
