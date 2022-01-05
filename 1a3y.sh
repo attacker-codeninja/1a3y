@@ -592,7 +592,7 @@ lfitest(){
     echo "[$(date +%H:%M:%S)] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
       axiom-scan $LFIPAYLOAD -m ffuf-hostpath -s \
             -timeout 5 \
-            -mr "root:x" \
+            -mr "root:x|localhost|boot|Ubuntu|PRIVATE|ssh-rsa|mysql|BASH|password" \
             -t 2 \
             -p 0.5 \
             -H "$CUSTOMHEADER" \
