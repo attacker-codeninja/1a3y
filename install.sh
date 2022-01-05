@@ -55,9 +55,6 @@ custom_origin_dependencies() {
         ln -s $PWD/Bug-Bounty-Toolz/ssrf.py /usr/local/bin/ssrf-headers-tool
     fi
 
-    wget -nc https://raw.githubusercontent.com/storenth/nuclei-templates/master/vulnerabilities/other/storenth-lfi.yaml
-    mv -f $PWD/storenth-lfi.yaml $HOMEDIR/nuclei-templates/vulnerabilities/other
-
     find . -name "requirements.txt" -type f -exec pip3 install -r '{}' ';'
 }
 
@@ -141,6 +138,10 @@ third_party_wordlists(){
         mv -f $PWD/lfi-payload.txt $PWD/wordlist/lfi-payload.txt
     else
         exit 1
+    fi
+    if wget -nc https://raw.githubusercontent.com/storenth/nuclei-templates/master/vulnerabilities/other/storenth-lfi.yaml; then
+        mv -f $PWD/storenth-lfi.yaml $PWD/wordlist/storenth-lfi.yaml
+    else exit 1
     fi
     # API endpoint brute-force
     if wget -nc https://raw.githubusercontent.com/storenth/bruteforce-lists/master/api.txt; then
