@@ -673,7 +673,7 @@ nmap_nse(){
 ffufbrute(){
     # gobuster -x append to each word in the selected wordlist
     # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
-    # interlace --silent -tL $TARGETDIR/3-all-subdomain-live-scheme.txt -threads 10 -c "ffuf -timeout 7 -u _target_/FUZZ -mc 200,201,202,401 -fs 0 \-w $CUSTOMFFUFWORDLIST -t $NUMBEROFTHREADS -p 0.5-2.5 -recursion -recursion-depth 2 -H \"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36\" \-o $TARGETDIR/ffuf/_cleantarget_.html -of html -or true"
+    # interlace --silent -tL $TARGETDIR/3-all-subdomain-live-scheme.txt -threads 10 -c "ffuf -timeout 7 -u _target_/FUZZ -mc 200,201,202 -fs 0 \-w $CUSTOMFFUFWORDLIST -t $NUMBEROFTHREADS -p 0.5-2.5 -recursion -recursion-depth 2 -H \"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36\" \-o $TARGETDIR/ffuf/_cleantarget_.html -of html -or true"
 
     echo "[$(date +%H:%M:%S)] Start directory bruteforce using ffuf..."
     # directory bruteforce
@@ -684,7 +684,7 @@ ffufbrute(){
           -p 0.5 \
           -fs 0 \
           -timeout 7 \
-          -mc 200,201,202,401 \
+          -mc 200,201,202 \
           -H "$CUSTOMHEADER" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
           -o $TARGETDIR/ffuf/directory-brute.csv
@@ -698,7 +698,7 @@ apibruteforce(){
     # API bruteforce
     axiom-scan $APIWORDLIST -m ffuf-hostpath -s \
           -timeout 5 \
-          -mc 200,201,202,401 \
+          -mc 200,201,202 \
           -t 2 \
           -p 0.5 \
           -H "$CUSTOMHEADER" \
