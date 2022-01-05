@@ -394,11 +394,14 @@ custompathlist(){
   xargs -I '{}' echo '^https?://(w{3}.)?([[:alnum:]_\-]+)?[.]?{}' < $TARGETDIR/3-all-subdomain-live.txt | grep -iEf - $RAWFETCHEDLIST | sed $UNWANTEDQUERIES > $FILTEREDFETCHEDLIST || true
 
   if [[ -n "$brute" ]]; then
-    echo "Prepare custom CUSTOMFFUFWORDLIST"
-    # filter first and first-second paths from full paths remove empty lines
-    < $FILTEREDFETCHEDLIST unfurl paths | sed 's/^\///;/^$/d;/web.archive.org/d;/@/d' | cut -f1-2 -d '/' | sort | uniq | sed 's/\/$//' | \
-                                                   tee -a $CUSTOMFFUFWORDLIST | cut -f1 -d '/' | sort | uniq >> $CUSTOMFFUFWORDLIST
-    sort -u $CUSTOMFFUFWORDLIST -o $CUSTOMFFUFWORDLIST
+    echo "Prepare custom bruteforce word list"
+    # filter first and first-second paths from full paths
+    # remove empty lines
+    # remove js|json|etc entries
+    < $FILTEREDFETCHEDLIST unfurl paths | sed 's/^\///;/^$/d;/web.archive.org/d;/@/d' | cut -f1-2 -d '/' | sort -u | sed 's/\/$//' | \
+                                        #  tee -a $CUSTOMFFUFWORDLIST | cut -f1 -d '/' | sort -u  >> $CUSTOMFFUFWORDLIST
+                                        grep -viE -e "(([[:alnum:][:punct:]]+)+)[.](js|json)" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](txt|log|yaml|env|gz|config|sql|xml|doc)" \
+                                        > $CUSTOMFFUFWORDLIST
   fi
 
     # js & json 
