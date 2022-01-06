@@ -48,7 +48,7 @@ quiet= # quiet mode
 
 AXIOMRESOLVERS=/home/op/lists/resolvers.txt # default axiom-configuration for the droplets
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
-ALTDNSWORDLIST=./wordlist/altdns_wordlist_uniq.txt
+ALTDNSWORDLIST=./wordlist/words.txt
 # https://gist.github.com/six2dez/a307a04a222fab5a57466c51e1569acf
 # https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt
 BRUTEDNSWORDLIST=./wordlist/six2dez-dns-wordlist.txt
@@ -113,7 +113,7 @@ enumeratesubdomains(){
         axiom-scan "${TARGETDIR}"/enumerated-subdomains.txt -m subfinder-distributed -o "${TARGETDIR}"/subfinder-list-2.txt
 
         sort -u "$TARGETDIR"/enumerated-subdomains.txt "$TARGETDIR"/subfinder-list-2.txt -o "$TARGETDIR"/enumerated-subdomains.txt
-        < $TARGETDIR/enumerated-subdomains.txt unfurl format %S | sort | uniq > $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt
+        < $TARGETDIR/enumerated-subdomains.txt unfurl format %S | sort -u > $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt
         sort -u $ALTDNSWORDLIST $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt -o $CUSTOMSUBDOMAINSWORDLIST
       fi
     else 
@@ -198,7 +198,7 @@ dnsbruteforcing(){
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date +%H:%M:%S)] dnsgen..."
-    axiom-scan $TARGETDIR/1-real-subdomains.txt -m dnsgen -o $TARGETDIR/tmp/dnsgen_out.txt
+    axiom-scan $TARGETDIR/1-real-subdomains.txt -m dnsgen-wordlist -wL $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
 
     sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt -o $TARGETDIR/2-all-subdomains.txt
