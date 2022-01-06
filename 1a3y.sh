@@ -704,7 +704,7 @@ apibruteforce(){
           -p 0.5 \
           -H "$CUSTOMHEADER" \
           -wL $TARGETDIR/3-all-subdomain-live-scheme.txt \
-          -o $TARGETDIR/ffuf/api-brute.csv
+          -o $TARGETDIR/ffuf/api-brute.csv > /dev/null
     echo "[$(date +%H:%M:%S)] API bruteforce done"
 }
 
