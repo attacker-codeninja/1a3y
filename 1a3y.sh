@@ -66,7 +66,7 @@ CHECKHTTPX2XX="httpx -silent -no-color -mc 200,201,202 -rate-limit $REQUESTSPERS
 # used in sed to cut
 UNWANTEDPATHS='/[;]/d;/[.]css$/d;/[.]png$/d;/[.]svg$/d;/[.]jpg$/d;/[.]jpeg$/d;/[.]webp$/d;/[.]gif$/d;/[.]woff$/d;/[.]html$/d'
 UNWANTEDQUERIES="/^$/d;/^[^h]/d;/[;]/d;/[.]css$/d;/[.]png$/d;/[.]svg$/d;/[.]jpg$/d;/[.]jpeg$/d;/[.]webp$/d;/[.]gif$/d;/[.]woff$/d;/[.]html$/d;/[()]/d;/[{}]/d;/[\`]/d;/[\']/d;/[$]/d"
-JUICYFILETYPES="txt|log|yaml|env|gz|config|sql|xml|doc"
+JUICYFILETYPES="txt|log|yaml|env|gz|config|sql|xml|xlsx|doc|bak|old|src|jar|jsp|zip|tar"
 
 # definitions
 enumeratesubdomains(){
