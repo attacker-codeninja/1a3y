@@ -629,13 +629,13 @@ sqlmaptest(){
 # }
 masscantest(){
   if [ -s $TARGETDIR/dnsprobe_ip.txt ]; then
-    echo "[$(date +%H:%M:%S)] [masscan] Looking for open ports..."
+    echo "[$(date +%H:%M:%S)] [naabu] Looking for open ports..."
     # max-rate for accuracy
     # 25/587-smtp, 110/995-pop3, 143/993-imap, 445-smb, 3306-mysql, 3389-rdp, 5432-postgres, 5900/5901-vnc, 27017-mongodb
     # masscan -p0-65535 | -p0-1000,2375,3306,3389,4990,5432,5900,6379,6066,8080,8383,8500,8880,8983,9000,27017 -iL $TARGETDIR/dnsprobe_ip.txt --rate 1000 --open-only -oG $TARGETDIR/masscan_output.gnmap
-    axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 500
-    sleep 1
-    echo "[$(date +%H:%M:%S)] [masscan] done."
+    # axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 100
+    axiom-scan $TARGETDIR/dnsprobe_ip.txt -m naabu -silent -rate 150 -p - -o $TARGETDIR/naabu_out
+    echo "[$(date +%H:%M:%S)] [naabu] done."
   fi
 }
 
