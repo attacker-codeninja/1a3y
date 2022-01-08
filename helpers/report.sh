@@ -47,10 +47,10 @@ images() {
 
 openports(){
     # add open ports
-    if [ -s ${TARGETDIR}/masscan_output.gnmap ]; then
+    if [ -s ${TARGETDIR}/naabu_out ]; then
         echo '<div>'
             echo "<h4>Open ports found:</h4>"
-            ports=$(grep "^Host" ${TARGETDIR}/masscan_output.gnmap | sort -k2n -k5n | cut -d ' ' -f2,4)
+            ports=$(cat $TARGETDIR/naabu_out)
             echo "<pre style='font-size: 10px;'><code>""${ports}""</code></pre>"
         echo '</div>'
     else
