@@ -83,7 +83,6 @@ enumeratesubdomains(){
     echo "subfinder..."
     subfinder -all -d $1 -silent -o $TARGETDIR/subfinder-list.txt &
     PID_SUBFINDER_FIRST=$!
-    echo $1 >> $TARGETDIR/subfinder-list.txt # to be sure main domain added in case of one domain scope
 
     echo "assetfinder..."
     assetfinder --subs-only $1 > $TARGETDIR/assetfinder-list.txt &
@@ -105,12 +104,14 @@ enumeratesubdomains(){
     # sort enumerated subdomains
     sort -u "$TARGETDIR"/subfinder-list.txt $TARGETDIR/assetfinder-list.txt "$TARGETDIR"/github-subdomains-list.txt -o "$TARGETDIR"/enumerated-subdomains.txt
 
+    echo $1 >> "${TARGETDIR}/enumerated-subdomains.txt" # to be sure main domain added in case of wildcard
+
     if [[ -s "$TARGETDIR"/enumerated-subdomains.txt ]]; then
       sed "${SEDOPTION[@]}" '/^[.]/d' $TARGETDIR/enumerated-subdomains.txt
       if [[ -n "$alt" ]]; then
         echo
         echo "[subfinder] second try..."
-        axiom-scan "${TARGETDIR}"/enumerated-subdomains.txt -m subfinder-distributed -o "${TARGETDIR}"/subfinder-list-2.txt
+        axiom-scan "${TARGETDIR}/enumerated-subdomains.txt" -m subfinder-distributed -o "${TARGETDIR}/subfinder-list-2.txt"
 
         sort -u "$TARGETDIR"/enumerated-subdomains.txt "$TARGETDIR"/subfinder-list-2.txt -o "$TARGETDIR"/enumerated-subdomains.txt
         < $TARGETDIR/enumerated-subdomains.txt unfurl format %S | sort -u > $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt
