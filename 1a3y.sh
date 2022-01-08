@@ -587,17 +587,19 @@ ssrftest(){
 
 # https://www.allysonomalley.com/2021/02/11/burpparamflagger-identifying-possible-ssrf-lfi-insertion-points/
 # https://blog.cobalt.io/a-pentesters-guide-to-file-inclusion-8fdfc30275da
+# https://github.com/pry0cc/axiom/issues/510
+# -mr "root:x|localhost|boot|Ubuntu|PRIVATE|ssh-rsa|mysql|BASH|password"
 lfitest(){
   if [[ -s "$CUSTOMLFIQUERYLIST" ]]; then
     echo
     echo "[$(date +%H:%M:%S)] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
       axiom-scan $LFIPAYLOAD -m ffuf-hostpath -s \
+            -wL $CUSTOMLFIQUERYLIST \
+            -H "$CUSTOMHEADER" \
             -timeout 5 \
-            -mr "root:x|localhost|boot|Ubuntu|PRIVATE|ssh-rsa|mysql|BASH|password" \
             -t 2 \
             -p 0.5 \
-            -H "$CUSTOMHEADER" \
-            -wL $CUSTOMLFIQUERYLIST \
+            -mr "root:x" \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
     if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
@@ -605,7 +607,8 @@ lfitest(){
       echo "[$(date +%H:%M:%S)] [LFI] nuclei fuzz for LFI"
         axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
             -wL "${PWD}/wordlist/storenth-lfi.yaml" \
-            -H "$CUSTOMHEADER" -rl "$REQUESTSPERSECOND" \
+            -H "$CUSTOMHEADER" \
+            -rl "$REQUESTSPERSECOND" \
             -o $TARGETDIR/nuclei/nuclei_lfi_out.txt
       echo "[$(date +%H:%M:%S)] [LFI] done."
     fi
@@ -672,6 +675,7 @@ nmap_nse(){
 }
 
 ffufbrute(){
+    # gobuster dir -u http://<ip>:3333 -w <word list location>
     # gobuster -x append to each word in the selected wordlist
     # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
     # interlace --silent -tL $TARGETDIR/3-all-subdomain-live-scheme.txt -threads 10 -c "ffuf -timeout 7 -u _target_/FUZZ -mc 200,201,202 -fs 0 \-w $CUSTOMFFUFWORDLIST -t $NUMBEROFTHREADS -p 0.5-2.5 -recursion -recursion-depth 2 -H \"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36\" \-o $TARGETDIR/ffuf/_cleantarget_.html -of html -or true"
@@ -732,15 +736,15 @@ recon(){
 
   nucleitest $1
 
-  if [[ -n "$brute" ]]; then
-    ffufbrute $1 # disable/enable yourself (--single preferred) because manually work need on targets without WAF
-    apibruteforce $1
-  fi
-
   if [[ -n "$fuzz" ]]; then
     ssrftest $1
     lfitest $1
     sqlmaptest $1
+  fi
+
+  if [[ -n "$brute" ]]; then
+    ffufbrute $1 # disable/enable yourself (--single preferred) because manually work need on targets without WAF
+    apibruteforce $1
   fi
 
   # bypass403test $1
