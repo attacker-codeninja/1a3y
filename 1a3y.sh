@@ -139,7 +139,7 @@ getgau(){
 
 getwaybackurl(){
   echo "waybackurls..."
-  axiom-scan $TARGETDIR/  -m waybackurls -o $TARGETDIR/tmp/waybackurls_raw_output.txt
+  axiom-scan $TARGETDIR/enumerated-subdomains.txt -m waybackurls -o $TARGETDIR/tmp/waybackurls_raw_output.txt
   grep "$1" $TARGETDIR/tmp/waybackurls_raw_output.txt | sort -u | qsreplace -a > $TARGETDIR/tmp/waybackurls_output.txt
   echo "waybackurls done."
 }
