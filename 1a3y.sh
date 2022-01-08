@@ -405,7 +405,7 @@ custompathlist(){
     < $FILTEREDFETCHEDLIST unfurl paths | sed 's/^\///;/^$/d;/web.archive.org/d;/@/d' | cut -f1-2 -d '/' | sort -u | sed 's/\/$//' | \
                                         #  tee -a $CUSTOMFFUFWORDLIST | cut -f1 -d '/' | sort -u  >> $CUSTOMFFUFWORDLIST
                                         grep -viE -e "(([[:alnum:][:punct:]]+)+)[.](js|json)" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](${JUICYFILETYPES})" \
-                                        > $CUSTOMFFUFWORDLIST
+                                        > $CUSTOMFFUFWORDLIST || true
   fi
 
     # js & json 
@@ -678,6 +678,7 @@ nmap_nse(){
 }
 
 ffufbrute(){
+  if [ -s "${CUSTOMFFUFWORDLIST}" ]; then
     # gobuster dir -u http://<ip>:3333 -w <word list location>
     # gobuster -x append to each word in the selected wordlist
     # gobuster dir -u https://target.com -w ~/wordlist.txt -t 100 -x php,cgi,sh,txt,log,py,jpeg,jpg,png
@@ -698,6 +699,7 @@ ffufbrute(){
           -o $TARGETDIR/ffuf/directory-brute.csv
 
     echo "[$(date +%H:%M:%S)] directory bruteforce done"
+  fi
 }
 
 apibruteforce(){
