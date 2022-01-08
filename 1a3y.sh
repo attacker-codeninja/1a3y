@@ -81,9 +81,9 @@ enumeratesubdomains(){
 
     # Passive subdomain enumeration
     echo "subfinder..."
-    echo $1 >> $TARGETDIR/subfinder-list.txt # to be sure main domain added in case of one domain scope
     subfinder -all -d $1 -silent -o $TARGETDIR/subfinder-list.txt &
     PID_SUBFINDER_FIRST=$!
+    echo $1 >> $TARGETDIR/subfinder-list.txt # to be sure main domain added in case of one domain scope
 
     echo "assetfinder..."
     assetfinder --subs-only $1 > $TARGETDIR/assetfinder-list.txt &
