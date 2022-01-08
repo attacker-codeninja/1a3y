@@ -1,4 +1,4 @@
 #!/bin/bash -x
 
 apt -y update && apt upgrade
-apt -y install less wordlists dirb man
+apt -y install less wordlists dirb man nano
