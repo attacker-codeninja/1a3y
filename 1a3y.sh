@@ -189,7 +189,7 @@ dnsbruteforcing(){
   if [[  -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date +%H:%M:%S)] puredns bruteforce..."
     # https://sidxparab.gitbook.io/subdomain-enumeration-guide/active-enumeration/dns-bruteforcing
-    axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 100000 -l 5000 -q -o $TARGETDIR/puredns-bruteforce-output.txt
+    axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 1000000 -l 500 --wildcard-tests 50 -q -o $TARGETDIR/puredns-bruteforce-output.txt
     sort -u $TARGETDIR/puredns-bruteforce-output.txt $TARGETDIR/1-real-subdomains.txt -o $TARGETDIR/1-real-subdomains.txt
     echo "[$(date +%H:%M:%S)] puredns bruteforce done."
   fi
@@ -244,6 +244,7 @@ dnsprobing(){
       # additional resolving because shuffledns missing IP on output
       echo
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
+      # additional resolving because shuffledns missing IP on output
       # -t mean cuncurrency
       axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
