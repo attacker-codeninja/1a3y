@@ -110,10 +110,6 @@ enumeratesubdomains(){
       sed "${SEDOPTION[@]}" '/^[.]/d' $TARGETDIR/enumerated-subdomains.txt
       if [[ -n "$alt" ]]; then
         echo
-        echo "[subfinder] second try..."
-        axiom-scan "${TARGETDIR}/enumerated-subdomains.txt" -m subfinder-distributed -o "${TARGETDIR}/subfinder-list-2.txt"
-
-        sort -u "$TARGETDIR"/enumerated-subdomains.txt "$TARGETDIR"/subfinder-list-2.txt -o "$TARGETDIR"/enumerated-subdomains.txt
         < $TARGETDIR/enumerated-subdomains.txt unfurl format %S | sort -u > $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt
         sort -u $ALTDNSWORDLIST $TARGETDIR/tmp/enumerated-subdomains-wordlist.txt -o $CUSTOMSUBDOMAINSWORDLIST
       fi
