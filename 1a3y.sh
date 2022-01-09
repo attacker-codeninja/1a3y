@@ -449,10 +449,10 @@ linkfindercrawling(){
 
       echo "[$(date +%H:%M:%S)] linkfinder"
       axiom-scan $TARGETDIR/tmp/js-list.txt -m linkfinder -o $TARGETDIR/linkfinder/
-      sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
       echo "[$(date +%H:%M:%S)] linkfinder done"
 
       if [ -s $TARGETDIR/linkfinder/linkfinder_out.txt ]; then
+        sed "${SEDOPTION[@]}" $UNWANTEDPATHS $TARGETDIR/linkfinder/linkfinder_out.txt
         sort -u $TARGETDIR/linkfinder/linkfinder_out.txt -o $TARGETDIR/linkfinder/linkfinder_out.txt
         sed "${SEDOPTION[@]}" 's/\\//g' $TARGETDIR/linkfinder/linkfinder_out.txt
 
