@@ -240,7 +240,7 @@ dnsprobing(){
       cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   else
       echo "[$(date +%H:%M:%S)] [puredns] massdns probing with wildcard sieving..."
-      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
+      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 1000000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
       # additional resolving because shuffledns missing IP on output
       echo
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
