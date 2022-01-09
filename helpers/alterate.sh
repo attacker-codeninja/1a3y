@@ -69,4 +69,4 @@ twodigit() {
   fi
 }
 onedigit "$1"
-# twodigit "$1"
+twodigit "$1"
