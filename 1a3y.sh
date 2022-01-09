@@ -537,16 +537,23 @@ linkfindercrawling(){
         axiom-scan $TARGETDIR/tmp/juicy-files-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/juicy_out.txt &> /dev/null
         echo "$(date +%H:%M:%S)] juicy done"
       fi
-
-      # test means if linkfinder did not provide any output secretfinder testing makes no sense
-      if [ -s $TARGETDIR/tmp/js-list.txt ]; then
-          echo "$(date +%H:%M:%S)] secretfinder"
-          # https://github.com/m4ll0k/SecretFinder/issues/20
-          axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/secretfinder/
-          cat $TARGETDIR/secretfinder/* > $TARGETDIR/tmp/secretfinder_out.txt
-          echo "$(date +%H:%M:%S)] done"
-      fi
     fi
+}
+
+secretfinder(){
+  # test means if linkfinder did not provide any output secretfinder testing makes no sense
+  if [ -s $TARGETDIR/tmp/js-list.txt ]; then
+    echo "$(date +%H:%M:%S)] secretfinder"
+    # https://github.com/m4ll0k/SecretFinder/issues/20
+    axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/secretfinder/
+    cat $TARGETDIR/secretfinder/* > $TARGETDIR/tmp/secretfinder_out.txt
+    echo "$(date +%H:%M:%S)] secretfinder done"
+
+    # https://github.com/storenth/getsecrets
+    echo "$(date +%H:%M:%S)] getsecrets"
+    axiom-scan $TARGETDIR/tmp/js-list.txt -m getsecrets -o $TARGETDIR/getsecrets/
+    echo "$(date +%H:%M:%S)] getsecrets done"
+  fi
 }
 
 # https://rez0.blog/hacking/2019/11/29/rce-via-imagetragick.html
@@ -736,6 +743,7 @@ recon(){
     gospidertest $1
     custompathlist $1
     linkfindercrawling $1
+    secretfinder $1
   fi
 
   screenshots $1
