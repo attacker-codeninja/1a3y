@@ -7,6 +7,9 @@ scp_provision_script(){
     if ! axiom-scp '/root/.config/subfinder/config.yaml' 'lazy*':'/home/op/.config/subfinder/'; then
         exit 1
     fi
+    if ! axiom-scp /root/1a3y/resolvers/vps_resolvers.txt 'lazy*':'/home/op/lists/'; then
+        exit 1
+    fi
 }
 
 notification(){
