@@ -51,6 +51,13 @@ onedigit(){
       echo "$ONEDIGIT_4" | sed "s/[-][[:digit:]][.]/-${X}./"
     done
   fi
+
+  ONEDIGIT_5=$(grep -vE "[._-][[:digit:]][._-]" $1)
+  if [[ $ONEDIGIT_5 ]]; then
+    for X in {0..102}; do
+      echo "$ONEDIGIT_5" | sed "s/[[:digit:]]/${X}/"
+    done
+  fi
 }
 
 #######################################
