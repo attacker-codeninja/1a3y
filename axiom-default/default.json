@@ -248,6 +248,9 @@
         "echo 'Installing SecretFinder'",
         "/bin/su -l op -c 'git clone --depth 1 https://github.com/storenth/SecretFinder.git /home/op/recon/SecretFinder && cd /home/op/recon/SecretFinder && pip3 install -r requirements.txt && chmod +x SecretFinder.py && cd'",
 
+        "echo 'Installing getsecrets'",
+        "/bin/su -l op -c 'git clone https://github.com/storenth/getsecrets.git /home/op/recon/getsecrets && chmod +x /home/op/recon/getsecrets/getsecrets.sh'",
+
         "echo 'Installing masscan'",
         "apt install masscan -y -qq",
 
