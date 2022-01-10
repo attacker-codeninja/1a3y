@@ -46,7 +46,7 @@ discord= # send notifications
 vps= # tune async jobs to reduce stuff like concurrent headless chromium but increase bruteforce list and enable DNS bruteforce
 quiet= # quiet mode
 
-AXIOMRESOLVERS=/home/op/lists/resolvers.txt # default axiom-configuration for the droplets
+AXIOMRESOLVERS=/home/op/lists/vps_resolvers.txt # default axiom-configuration for the droplets
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
 ALTDNSWORDLIST=./wordlist/words.txt
 # https://gist.github.com/six2dez/a307a04a222fab5a57466c51e1569acf
