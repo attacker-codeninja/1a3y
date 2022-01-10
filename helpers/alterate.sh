@@ -14,7 +14,7 @@ fi
 
 
 #######################################
-# grep фтв change values ​​within this digit
+# grep one digit to alterate
 # Arguments:
 #   file
 # Example:
@@ -53,20 +53,32 @@ onedigit(){
   fi
 }
 
+#######################################
+# grep two digits to alterate
+# Arguments:
+#   file
+# Example:
+#   test.28.demo.com -->
+#   test.1.demo.com
+#   ...
+#   test.102.demo.com
+#######################################
 twodigit() {
   TWODIGIT_1=$(grep -E "[-][[:digit:]]{2}[-]" $1)
   if [[ $TWODIGIT_1 ]]; then
-    for X in {0..99}; do
+    for X in {0..102}; do
       echo "$TWODIGIT_1" | sed -E "s/[-][[:digit:]]{2}[-]/-${X}-/"
     done
   fi
 
   TWODIGIT_2=$(grep -E "[.][[:digit:]]{2}[.]" $1)
   if [[ $TWODIGIT_2 ]]; then
-    for X in {0..99}; do
+    for X in {0..102}; do
       echo "$TWODIGIT_2" | sed -E "s/[.][[:digit:]]{2}[.]/.${X}./"
     done
   fi
 }
+
+# main entry point
 onedigit "$1"
 twodigit "$1"
