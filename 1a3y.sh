@@ -547,12 +547,13 @@ secretfinder(){
     echo "$(date +%H:%M:%S)] secretfinder"
     # https://github.com/m4ll0k/SecretFinder/issues/20
     axiom-scan $TARGETDIR/tmp/js-list.txt -m secretfinder -o $TARGETDIR/secretfinder/
-    cat $TARGETDIR/secretfinder/* > $TARGETDIR/tmp/secretfinder_out.txt
+    cat $TARGETDIR/secretfinder/* > $TARGETDIR/secretfinder_out.txt
     echo "$(date +%H:%M:%S)] secretfinder done"
 
     # https://github.com/storenth/getsecrets
     echo "$(date +%H:%M:%S)] getsecrets"
     axiom-scan $TARGETDIR/tmp/js-list.txt -m getsecrets -o $TARGETDIR/getsecrets/
+    cat $TARGETDIR/getsecrets/* > $TARGETDIR/getsecrets_out.txt
     echo "$(date +%H:%M:%S)] getsecrets done"
   fi
 }
