@@ -25,35 +25,35 @@ fi
 #######################################
 onedigit(){
   ONEDIGIT=$(grep -E "[-][[:digit:]][-]" $1)
-  if [[ $ONEDIGIT ]]; then
+  if [[ -n $ONEDIGIT ]]; then
     for X in {0..102}; do
       echo "$ONEDIGIT" | sed "s/[-][[:digit:]][-]/-${X}-/"
     done
   fi
 
   ONEDIGIT_2=$(grep -E "[.][[:digit:]][.]" $1)
-  if [[ $ONEDIGIT_2 ]]; then
+  if [[ -n $ONEDIGIT_2 ]]; then
     for X in {0..102}; do
       echo "$ONEDIGIT_2" | sed "s/[.][[:digit:]][.]/.${X}./"
     done
   fi
 
   ONEDIGIT_3=$(grep -E "[.][[:digit:]][-]" $1)
-  if [[ $ONEDIGIT_3 ]]; then
+  if [[ -n $ONEDIGIT_3 ]]; then
     for X in {0..102}; do
       echo "$ONEDIGIT_3" | sed "s/[.][[:digit:]][-]/.${X}-/"
     done
   fi
 
   ONEDIGIT_4=$(grep -E "[-][[:digit:]][.]" $1)
-  if [[ $ONEDIGIT_4 ]]; then
+  if [[ -n $ONEDIGIT_4 ]]; then
     for X in {0..102}; do
       echo "$ONEDIGIT_4" | sed "s/[-][[:digit:]][.]/-${X}./"
     done
   fi
 
   ONEDIGIT_5=$(grep -vE "[._-][[:digit:]][._-]" $1)
-  if [[ $ONEDIGIT_5 ]]; then
+  if [[ -n $ONEDIGIT_5 ]]; then
     for X in {0..102}; do
       echo "$ONEDIGIT_5" | sed "s/[[:digit:]]/${X}/"
     done
@@ -72,14 +72,14 @@ onedigit(){
 #######################################
 twodigit() {
   TWODIGIT_1=$(grep -E "[-][[:digit:]]{2}[-]" $1)
-  if [[ $TWODIGIT_1 ]]; then
+  if [[ -n $TWODIGIT_1 ]]; then
     for X in {0..102}; do
       echo "$TWODIGIT_1" | sed -E "s/[-][[:digit:]]{2}[-]/-${X}-/"
     done
   fi
 
   TWODIGIT_2=$(grep -E "[.][[:digit:]]{2}[.]" $1)
-  if [[ $TWODIGIT_2 ]]; then
+  if [[ -n $TWODIGIT_2 ]]; then
     for X in {0..102}; do
       echo "$TWODIGIT_2" | sed -E "s/[.][[:digit:]]{2}[.]/.${X}./"
     done
