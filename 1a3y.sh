@@ -197,13 +197,13 @@ dnsbruteforcing(){
 
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
-    echo "[$(date +%H:%M:%S)] alterate.sh fuzz..."
-    ./helpers/alterate.sh "$TARGETDIR/1-real-subdomains.txt" > $TARGETDIR/tmp/alterate_out.txt
-    echo "[$(date +%H:%M:%S)] alterate.sh done"
-
     echo "[$(date +%H:%M:%S)] dnsgen..."
     axiom-scan $TARGETDIR/1-real-subdomains.txt -m dnsgen-wordlist -wL $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
+
+    echo "[$(date +%H:%M:%S)] alterate.sh fuzz..."
+    ./helpers/alterate.sh "$TARGETDIR/tmp/dnsgen_out.txt" > $TARGETDIR/tmp/alterate_out.txt
+    echo "[$(date +%H:%M:%S)] alterate.sh done"
 
     sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/2-all-subdomains.txt
     echo "[$(date +%H:%M:%S)] dnsgen done"
