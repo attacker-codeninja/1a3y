@@ -81,19 +81,19 @@ enumeratesubdomains(){
 
     # Passive subdomain enumeration
     echo "subfinder..."
-    subfinder -all -d $1 -silent -o $TARGETDIR/subfinder-list.txt &
-    PID_SUBFINDER_FIRST=$!
+    subfinder -all -d $1 -silent -o $TARGETDIR/subfinder-list.txt
+    # PID_SUBFINDER_FIRST=$!
 
     echo "assetfinder..."
-    assetfinder --subs-only $1 > $TARGETDIR/assetfinder-list.txt &
-    PID_ASSETFINDER=$!
+    assetfinder --subs-only $1 > $TARGETDIR/assetfinder-list.txt
+    # PID_ASSETFINDER=$!
 
     echo "github-subdomains.py..."
     github-subdomains -d $1 -t $GITHUBTOKEN | sed "s/^\.//;/error/d" | grep "[.]${1}" > $TARGETDIR/github-subdomains-list.txt || true
 
-    echo "wait PID_SUBFINDER_FIRST $PID_SUBFINDER_FIRST and PID_ASSETFINDER $PID_ASSETFINDER"
-    wait $PID_SUBFINDER_FIRST $PID_ASSETFINDER
-    echo "PID_SUBFINDER_FIRST $PID_SUBFINDER_FIRST and PID_ASSETFINDER $PID_ASSETFINDER done."
+    # echo "wait PID_SUBFINDER_FIRST $PID_SUBFINDER_FIRST and PID_ASSETFINDER $PID_ASSETFINDER"
+    # wait $PID_SUBFINDER_FIRST $PID_ASSETFINDER
+    # echo "PID_SUBFINDER_FIRST $PID_SUBFINDER_FIRST and PID_ASSETFINDER $PID_ASSETFINDER done."
     # echo "amass..."
     # amass enum --passive -log $TARGETDIR/amass_errors.log -d $1 -o $TARGETDIR/amass-list.txt
 
