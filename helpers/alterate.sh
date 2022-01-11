@@ -52,10 +52,11 @@ onedigit(){
     done
   fi
 
-  ONEDIGIT_5=$(grep -vE "[._-][[:digit:]][._-]" $1)
+  ONEDIGIT_5=$(grep -vE -e "[._-][[:digit:]][._-]" -e "[._-][[:digit:]]{2}[._-]" -e "[._-|[:alpha:]][[:digit:]]{2}[._-|[:alpha:]]" $1 | grep -E "[._-|[:alpha:]][[:digit:]][._-|[:alpha:]]")
   if [[ -n $ONEDIGIT_5 ]]; then
+    echo "eco $ONEDIGIT_5"
     for X in {0..102}; do
-      echo "$ONEDIGIT_5" | sed "s/[[:digit:]]/${X}/"
+      echo "$ONEDIGIT_5" | sed -E "s/[[:digit:]]/${X}/"
     done
   fi
 }
