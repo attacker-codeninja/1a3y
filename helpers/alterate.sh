@@ -27,28 +27,28 @@ onedigit(){
   ONEDIGIT=$(grep -E "[-][[:digit:]][-]" $1)
   if [[ -n $ONEDIGIT ]]; then
     for X in {0..102}; do
-      echo "$ONEDIGIT" | sed "s/[-][[:digit:]][-]/-${X}-/"
+      echo "$ONEDIGIT" | sed -E "s/[-][[:digit:]][-]/-${X}-/"
     done
   fi
 
   ONEDIGIT_2=$(grep -E "[.][[:digit:]][.]" $1)
   if [[ -n $ONEDIGIT_2 ]]; then
     for X in {0..102}; do
-      echo "$ONEDIGIT_2" | sed "s/[.][[:digit:]][.]/.${X}./"
+      echo "$ONEDIGIT_2" | sed -E "s/[.][[:digit:]][.]/.${X}./"
     done
   fi
 
   ONEDIGIT_3=$(grep -E "[.][[:digit:]][-]" $1)
   if [[ -n $ONEDIGIT_3 ]]; then
     for X in {0..102}; do
-      echo "$ONEDIGIT_3" | sed "s/[.][[:digit:]][-]/.${X}-/"
+      echo "$ONEDIGIT_3" | sed -E "s/[.][[:digit:]][-]/.${X}-/"
     done
   fi
 
   ONEDIGIT_4=$(grep -E "[-][[:digit:]][.]" $1)
   if [[ -n $ONEDIGIT_4 ]]; then
     for X in {0..102}; do
-      echo "$ONEDIGIT_4" | sed "s/[-][[:digit:]][.]/-${X}./"
+      echo "$ONEDIGIT_4" | sed -E "s/[-][[:digit:]][.]/-${X}./"
     done
   fi
 
