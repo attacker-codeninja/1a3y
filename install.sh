@@ -155,10 +155,6 @@ third_party_wordlists(){
     else
         exit 1
     fi
-    # permutation wordlist
-    if ! wget -nc -O $PWD/wordlist/words.txt https://raw.githubusercontent.com/storenth/dnsgen/master/dnsgen/words.txt; then
-        exit 1
-    fi
 }
 
 notification(){
