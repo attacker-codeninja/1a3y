@@ -232,7 +232,7 @@ dnsprobing(){
     echo $1 > $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$list" ]]; then
       echo "[$(date +%H:%M:%S)] [massdns] probing and wildcard sieving..."
-      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 100000 -l 5000 -o $TARGETDIR/resolved-list.txt
+      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 1000000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
       # # additional resolving because shuffledns/pureDNS missing IP on output
       echo
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
@@ -304,7 +304,7 @@ checkhttprobe(){
             echo "[math Mode] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
             mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr | tee $TARGETDIR/tmp/dnsprobe_all_ptr.txt | grep $1 | sort | uniq | tee $TARGETDIR/tmp/dnsprobe_ptr.txt | \
-                puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 100000 -l 5000 | \
+                puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 1000000 --wildcard-tests 50 -l 500 | \
                 dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/dnsprobe_ip_mode.txt | \
                 $HTTPXCALL | tee $TARGETDIR/tmp/httpx_ip_mode.txt | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
 
@@ -827,7 +827,7 @@ main(){
   if [[ -n "$fuzz" ]]; then
     echo "Starting up listen server..."
     # Listen server
-    interactsh-client -v -server https://interact.sh -json -o $TARGETDIR/_listen_server_out.log &> $TARGETDIR/_listen_server.log &
+    interactsh-client -v -json -o $TARGETDIR/_listen_server_out.log &> $TARGETDIR/_listen_server.log &
     SERVER_PID=$!
 
     MAXCOUNT=0
