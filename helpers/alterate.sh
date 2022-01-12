@@ -54,7 +54,6 @@ onedigit(){
 
   ONEDIGIT_5=$(grep -vE -e "[._-][[:digit:]][._-]" -e "[._-][[:digit:]]{2}[._-]" -e "[._-|[:alpha:]][[:digit:]]{2}[._-|[:alpha:]]" $1 | grep -E "[._-|[:alpha:]][[:digit:]][._-|[:alpha:]]")
   if [[ -n $ONEDIGIT_5 ]]; then
-    echo "eco $ONEDIGIT_5"
     for X in {0..102}; do
       echo "$ONEDIGIT_5" | sed -E "s/[[:digit:]]/${X}/"
     done
@@ -83,6 +82,20 @@ twodigit() {
   if [[ -n $TWODIGIT_2 ]]; then
     for X in {0..102}; do
       echo "$TWODIGIT_2" | sed -E "s/[.][[:digit:]]{2}[.]/.${X}./"
+    done
+  fi
+
+  TWODIGIT_3=$(grep -E "[-][[:digit:]]{2}[.]" $1)
+  if [[ -n $TWODIGIT_3 ]]; then
+    for X in {0..102}; do
+      echo "$TWODIGIT_3" | sed -E "s/[-][[:digit:]]{2}[.]/-${X}./"
+    done
+  fi
+
+  TWODIGIT_4=$(grep -E "[.][[:digit:]]{2}[-]" $1)
+  if [[ -n $TWODIGIT_4 ]]; then
+    for X in {0..102}; do
+      echo "$TWODIGIT_4" | sed -E "s/[.][[:digit:]]{2}[-]/.${X}-/"
     done
   fi
 }
