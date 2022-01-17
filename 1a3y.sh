@@ -303,10 +303,10 @@ checkhttprobe(){
             echo "[math Mode] found: $CIDR1"
             echo "[math Mode] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
-            mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr | tee $TARGETDIR/tmp/dnsprobe_all_ptr.txt | grep $1 | sort | uniq | tee $TARGETDIR/tmp/dnsprobe_ptr.txt | \
-                puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 1000000 --wildcard-tests 50 -l 500 | \
-                dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/dnsprobe_ip_mode.txt | \
-                $HTTPXCALL | tee $TARGETDIR/tmp/httpx_ip_mode.txt | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
+            mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr | tee $TARGETDIR/tmp/ptr_all_1.txt | grep $1 | sort | uniq | tee $TARGETDIR/tmp/ptr_scope_2.txt \
+              | puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 1000000 --wildcard-tests 50 -l 500 | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
+              | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt \
+              | $HTTPXCALL | tee $TARGETDIR/tmp/ptr_http_5.txt | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
 
             # sort new assets
             sort -u $TARGETDIR/dnsprobe_ip.txt  -o $TARGETDIR/dnsprobe_ip.txt 
