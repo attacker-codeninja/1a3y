@@ -101,7 +101,6 @@ twodigit() {
 
   TWODIGIT_5=$(grep -vE -e "[._-][[:digit:]][._-]" -e "[._-][[:digit:]]{2}[._-]" $1 | grep -E "([._-]|[[:alpha:]])[[:digit:]]{2}([._-]|[[:alpha:]])")
   if [[ -n $TWODIGIT_5 ]]; then
-    echo "2"
     for X in {0..102}; do
       echo "$TWODIGIT_5" | sed -E "s/[[:digit:]]{2}/${X}/"
     done
