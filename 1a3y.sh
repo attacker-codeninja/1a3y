@@ -190,7 +190,7 @@ dnsbruteforcing(){
   if [[  -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date +%H:%M:%S)] puredns bruteforce..."
     # https://sidxparab.gitbook.io/subdomain-enumeration-guide/active-enumeration/dns-bruteforcing
-    axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 1000000 -l 500 --wildcard-tests 50 -q -o $TARGETDIR/puredns-bruteforce-output.txt
+    axiom-scan $BRUTEDNSWORDLIST -m puredns-single $1 --wildcard-batch 500000 -l 500 --wildcard-tests 50 -q -o $TARGETDIR/puredns-bruteforce-output.txt
     sort -u $TARGETDIR/puredns-bruteforce-output.txt $TARGETDIR/1-real-subdomains.txt -o $TARGETDIR/1-real-subdomains.txt
     echo "[$(date +%H:%M:%S)] puredns bruteforce done."
   fi
@@ -232,7 +232,7 @@ dnsprobing(){
     echo $1 > $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$list" ]]; then
       echo "[$(date +%H:%M:%S)] [massdns] probing and wildcard sieving..."
-      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 1000000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
+      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
       # # additional resolving because shuffledns/pureDNS missing IP on output
       echo
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
@@ -245,7 +245,7 @@ dnsprobing(){
       cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   else
       echo "[$(date +%H:%M:%S)] [puredns] massdns probing with wildcard sieving..."
-      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 1000000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
+      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
       # additional resolving because shuffledns missing IP on output
       echo
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
@@ -304,7 +304,7 @@ checkhttprobe(){
             echo "[math Mode] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
             mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr | tee $TARGETDIR/tmp/ptr_all_1.txt | grep $1 | sort | uniq | tee $TARGETDIR/tmp/ptr_scope_2.txt \
-              | puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 1000000 --wildcard-tests 50 -l 500 | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
+              | puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 500000 --wildcard-tests 50 -l 500 | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
               | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt \
               | $HTTPXCALL | tee $TARGETDIR/tmp/ptr_http_5.txt | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
 
