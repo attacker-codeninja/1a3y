@@ -2,12 +2,8 @@
 
 # Mode octets finder
 
-RESOLVERS=resolvers/mini_resolvers.txt
-
 #######################################
 # Find mode under list of IPs.
-# Globals:
-#   RESOLVERS
 # Arguments:
 #   IP list
 #   Mode: 16/24, means subnet mask
@@ -16,8 +12,6 @@ RESOLVERS=resolvers/mini_resolvers.txt
 #######################################
 modefinder(){
   if [[ -s "$1" ]]; then
-    echo
-    echo "[$(date +%H:%M:%S)] [math Mode] finding math Mode of the IP numbers"
     if [[ -n "$2" ]]; then
       if (($2 == 16)); then
         MODEOCTET=$(cut -f1 -d '.' $1 | sort -n | uniq -c | sort | tail -n1 | xargs)
@@ -33,7 +27,7 @@ modefinder(){
             echo "[math Mode /16] found: $CIDR1"
             echo "[math Mode /16] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
-            mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr -r $RESOLVERS | sort -u
+            mapcidr -silent -cidr $CIDR1
           fi
         fi
 
@@ -58,7 +52,7 @@ modefinder(){
               echo "[math Mode /24] found: $CIDR1"
               echo "[math Mode /24] resolve PTR of the IP numbers"
               # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
-              mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr -r $RESOLVERS | sort -u
+              mapcidr -silent -cidr $CIDR1
 
             fi
           fi
@@ -72,7 +66,6 @@ modefinder(){
       usage
       exit 1
     fi
-    echo "[$(date +%H:%M:%S)] [math Mode] done."
   else
     echo "File $1 not found."
     exit 1
