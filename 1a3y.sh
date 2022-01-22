@@ -253,7 +253,7 @@ dnsprobing(){
       echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
       # additional resolving because shuffledns missing IP on output
       # -t mean cuncurrency
-      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
+      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -r $AXIOMRESOLVERS -a -resp -o $TARGETDIR/dnsprobe_out.txt
       # clear file from [ and ] symbols
       tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
       # split resolved hosts ans its IP (for masscan)
@@ -289,34 +289,25 @@ checkhttprobe(){
     cut -f1 -d ' ' $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt >> $TARGETDIR/3-all-subdomain-live-scheme.txt
     grep -E "\[4([0-9]){2}\]" $TARGETDIR/tmp/subdomain-live-status-code-scheme.txt | cut -f1 -d ' ' > $TARGETDIR/4xx-all-subdomain-live-scheme.txt
 
-      if [[ ( -n "$alt" || -n "$vps" ) && -s "$TARGETDIR"/dnsprobe_ip.txt ]]; then
-        echo
-        echo "[$(date +%H:%M:%S)] [math Mode] finding math Mode of the IP numbers"
-        MODEOCTET=$(cut -f1 -d '.' $TARGETDIR/dnsprobe_ip.txt | sort -n | uniq -c | sort | tail -n1 | xargs)
-        ISMODEOCTET1=$(echo $MODEOCTET | awk '{ print $1 }')
-        if ((ISMODEOCTET1 > 1)); then
-          MODEOCTET1=$(echo $MODEOCTET | awk '{ print $2 }')
+    if [[ ( -n "$alt" || -n "$vps" ) && -s "$TARGETDIR"/dnsprobe_ip.txt ]]; then
+      echo
+      echo "[$(date +%H:%M:%S)] [math Mode] finding math Mode of the IP numbers"
+      ./helpers/modefinder.sh "$TARGETDIR/dnsprobe_ip.txt" 24  > $TARGETDIR/tmp/modefinder_out.txt
 
-          MODEOCTET=$(grep "^${MODEOCTET1}" $TARGETDIR/dnsprobe_ip.txt | cut -f2 -d '.' | sort -n | uniq -c | sort | tail -n1 | xargs)
-          ISMODEOCTET2=$(echo $MODEOCTET | awk '{ print $1 }')
-          if ((ISMODEOCTET2 > 1)); then
-            MODEOCTET2=$(echo $MODEOCTET | awk '{ print $2 }')
-            CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
-            echo "[math Mode] found: $CIDR1"
-            echo "[math Mode] resolve PTR of the IP numbers"
-            # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
-            mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr | tee $TARGETDIR/tmp/ptr_all_1.txt | grep $1 | sort | uniq | tee $TARGETDIR/tmp/ptr_scope_2.txt \
-              | puredns -q -r $MINIRESOLVERS resolve --wildcard-batch 500000 --wildcard-tests 50 -l 500 | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
-              | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt \
-              | $HTTPXCALL | tee $TARGETDIR/tmp/ptr_http_5.txt | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
+      if [[ -s $TARGETDIR/tmp/modefinder_out.txt ]]; then
+        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m dnsx -silent -resp-only -ptr -retry 2 -rl $REQUESTSPERSECOND -r $AXIOMRESOLVERS -o $TARGETDIR/tmp/ptr_all_1.txt
+        grep "$1" $TARGETDIR/tmp/ptr_all_1.txt | sort -u | tee $TARGETDIR/tmp/ptr_scope_2.txt \
+          | puredns -q -r $MINIRESOLVERS resolve --skip-wildcard-filter | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
+          | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt
 
-            # sort new assets
-            sort -u $TARGETDIR/dnsprobe_ip.txt  -o $TARGETDIR/dnsprobe_ip.txt 
+        axiom-scan $TARGETDIR/tmp/ptr_ip_4.txt -m $HTTPXCALL -o $TARGETDIR/tmp/ptr_http_5.txt &> /dev/null
 
-          fi
-        fi
-        echo "[$(date +%H:%M:%S)] [math Mode] done."
+        # sort new assets
+        sort -u $TARGETDIR/tmp/ptr_http_5.txt $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
+        sort -u $TARGETDIR/dnsprobe_ip.txt  -o $TARGETDIR/dnsprobe_ip.txt 
       fi
+      echo "[$(date +%H:%M:%S)] [math Mode] done."
+    fi
   fi
   echo "[$(date +%H:%M:%S)] [httpx] done."
 }
@@ -763,7 +754,7 @@ recon(){
 
   if [[ -n "$brute" ]]; then
     ffufbrute $1 # disable/enable yourself (--single preferred) because manually work need on targets without WAF
-    apibruteforce $1
+    # apibruteforce $1
   fi
 
   # bypass403test $1
