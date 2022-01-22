@@ -30,27 +30,37 @@ modefinder(){
           if ((ISMODEOCTET2 > 1)); then
             MODEOCTET2=$(echo $MODEOCTET | cut -f2 -d ' ')
             CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
-            echo "[math Mode] found: $CIDR1"
-            echo "[math Mode] resolve PTR of the IP numbers"
+            echo "[math Mode /16] found: $CIDR1"
+            echo "[math Mode /16] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
             mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr -r $RESOLVERS | sort -u
           fi
         fi
+
       elif (($2 == 24)); then
         MODEOCTET=$(cut -f1 -d '.' $1 | sort -n | uniq -c | sort | tail -n1 | xargs)
         ISMODEOCTET1=$(echo $MODEOCTET | cut -f1 -d ' ')
+
         if ((ISMODEOCTET1 > 1)); then
           MODEOCTET1=$(echo $MODEOCTET | cut -f2 -d ' ')
-
           MODEOCTET=$(grep "^${MODEOCTET1}" $1 | cut -f2 -d '.' | sort -n | uniq -c | sort | tail -n1 | xargs)
           ISMODEOCTET2=$(echo $MODEOCTET | cut -f1 -d ' ')
+
           if ((ISMODEOCTET2 > 1)); then
             MODEOCTET2=$(echo $MODEOCTET | cut -f2 -d ' ')
-            CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
-            echo "[math Mode] found: $CIDR1"
-            echo "[math Mode] resolve PTR of the IP numbers"
-            # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
-            mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr -r $RESOLVERS | sort -u
+            MODEOCTET=$(grep "^${MODEOCTET1}.${MODEOCTET2}" $1 | cut -f3 -d '.' | sort -n | uniq -c | sort | tail -n1 | xargs)
+            ISMODEOCTET3=$(echo $MODEOCTET | cut -f1 -d ' ')
+
+            if ((ISMODEOCTET3 > 1)); then
+              MODEOCTET3=$(echo $MODEOCTET | cut -f2 -d ' ')
+
+              CIDR1="${MODEOCTET1}.${MODEOCTET2}.${MODEOCTET3}.0/24"
+              echo "[math Mode /24] found: $CIDR1"
+              echo "[math Mode /24] resolve PTR of the IP numbers"
+              # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
+              mapcidr -silent -cidr $CIDR1 | dnsx -silent -resp-only -ptr -r $RESOLVERS | sort -u
+
+            fi
           fi
         fi
       else
@@ -75,10 +85,10 @@ usage(){
   echo "example: ./modefinder.sh dnsprobe_ip.txt 24"
 }
 
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     echo "Error: expected positional arguments"
     usage
     exit 1
-else
+fi
 
 modefinder "$@"
