@@ -304,7 +304,14 @@ checkhttprobe(){
 
         # sort new assets
         [[ -s "$TARGETDIR"/tmp/ptr_http_5.txt ]] && sort -u $TARGETDIR/tmp/ptr_http_5.txt $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
-        sort -u $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/dnsprobe_ip.txt 
+        sort -u $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/dnsprobe_ip.txt
+
+#######################################
+# TEST all IP to verify scope visually
+        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -status-code -o $TARGETDIR/http_modefinder_out.txt &> /dev/null
+
+#######################################
+
       fi
       echo "[$(date +%H:%M:%S)] [math Mode] done."
     fi
@@ -645,6 +652,13 @@ masscantest(){
     # masscan -p0-65535 | -p0-1000,2375,3306,3389,4990,5432,5900,6379,6066,8080,8383,8500,8880,8983,9000,27017 -iL $TARGETDIR/dnsprobe_ip.txt --rate 1000 --open-only -oG $TARGETDIR/masscan_output.gnmap
     # axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 100
     axiom-scan $TARGETDIR/dnsprobe_ip.txt -m naabu -silent -rate 150 -p - -o $TARGETDIR/naabu_out
+
+    #######################################
+# TEST all IP to verify scope visually
+    echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
+    axiom-scan $TARGETDIR/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
+
+#######################################
     echo "[$(date +%H:%M:%S)] [naabu] done."
   fi
 }
