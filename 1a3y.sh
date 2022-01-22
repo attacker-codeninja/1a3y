@@ -308,7 +308,8 @@ checkhttprobe(){
 
 #######################################
 # TEST all IP to verify scope visually
-        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -status-code -o $TARGETDIR/http_modefinder_out.txt &> /dev/null
+        echo "[$(date +%H:%M:%S)] [math Mode] TEST httpx probes of all finded Modes of IPs"
+        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -status-code -o $TARGETDIR/http_modefinder_out.txt 1> /dev/null
 
 #######################################
 
@@ -653,7 +654,7 @@ masscantest(){
     # axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 100
     axiom-scan $TARGETDIR/dnsprobe_ip.txt -m naabu -silent -rate 150 -p - -o $TARGETDIR/naabu_out
 
-    #######################################
+#######################################
 # TEST all IP to verify scope visually
     echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
     axiom-scan $TARGETDIR/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
