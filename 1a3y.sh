@@ -296,15 +296,15 @@ checkhttprobe(){
 
       if [[ -s $TARGETDIR/tmp/modefinder_out.txt ]]; then
         axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m dnsx -silent -resp-only -ptr -retry 2 -rl $REQUESTSPERSECOND -r $AXIOMRESOLVERS -o $TARGETDIR/tmp/ptr_all_1.txt
-        grep "$1" $TARGETDIR/tmp/ptr_all_1.txt | sort -u | tee $TARGETDIR/tmp/ptr_scope_2.txt \
+        [[ -s "$TARGETDIR"/tmp/ptr_all_1.txt ]] && grep "$1" $TARGETDIR/tmp/ptr_all_1.txt | sort -u | tee $TARGETDIR/tmp/ptr_scope_2.txt \
           | puredns -q -r $MINIRESOLVERS resolve --skip-wildcard-filter | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
           | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt
 
-        axiom-scan $TARGETDIR/tmp/ptr_ip_4.txt -m $HTTPXCALL -o $TARGETDIR/tmp/ptr_http_5.txt &> /dev/null
+        [[ -s "$TARGETDIR"/tmp/ptr_ip_4.txt ]] && axiom-scan $TARGETDIR/tmp/ptr_ip_4.txt -m $HTTPXCALL -o $TARGETDIR/tmp/ptr_http_5.txt &> /dev/null
 
         # sort new assets
-        sort -u $TARGETDIR/tmp/ptr_http_5.txt $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
-        sort -u $TARGETDIR/dnsprobe_ip.txt  -o $TARGETDIR/dnsprobe_ip.txt 
+        [[ -s "$TARGETDIR"/tmp/ptr_http_5.txt ]] && sort -u $TARGETDIR/tmp/ptr_http_5.txt $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
+        sort -u $TARGETDIR/dnsprobe_ip.txt -o $TARGETDIR/dnsprobe_ip.txt 
       fi
       echo "[$(date +%H:%M:%S)] [math Mode] done."
     fi
