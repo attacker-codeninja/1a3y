@@ -58,7 +58,7 @@ modefinder(){
               fi
             fi
           fi
-        done <<< $ALLMODEOCTETS
+        done <<< "$ALLMODEOCTETS"
       else
         echo "Mode argument error: 16/24 only supports"
         usage
