@@ -8,7 +8,7 @@
 #   IP list
 #   Mode: 16/24, means subnet mask
 # Outputs:
-#   Writes IP range
+#   Writes IP list belongs to subnet mask
 #######################################
 modefinder(){
   if [[ -s "$1" ]]; then
