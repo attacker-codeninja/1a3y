@@ -24,8 +24,8 @@ modefinder(){
           if ((ISMODEOCTET2 > 1)); then
             MODEOCTET2=$(echo $MODEOCTET | cut -f2 -d ' ')
             CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
-            echo "[math Mode /16] found: $CIDR1"
-            echo "[math Mode /16] resolve PTR of the IP numbers"
+            # echo "[math Mode /16] found: $CIDR1"
+            # echo "[math Mode /16] resolve PTR of the IP numbers"
             # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
             mapcidr -silent -cidr $CIDR1
           fi
@@ -39,7 +39,7 @@ modefinder(){
 
           if ((ISMODEOCTET1 > 1)); then
             MODEOCTET1=$(echo $line | cut -f2 -d ' ')
-            echo "MODEOCTET1 = $MODEOCTET1"
+            # echo "MODEOCTET1 = $MODEOCTET1"
 
             SECONDMODEOCTETS=$(grep "^${MODEOCTET1}" $1 | cut -f2 -d '.' | sort -n | uniq -c | sort | sed -E "s/[[:space:]]+//")
             while IFS= read -r secondmatch ; do
@@ -47,7 +47,7 @@ modefinder(){
 
               if ((ISMODEOCTET2 > 1)); then
                 MODEOCTET2=$(echo $secondmatch | cut -f2 -d ' ')
-                echo "MODEOCTET2 = $MODEOCTET2"
+                # echo "MODEOCTET2 = $MODEOCTET2"
 
                 THIRDMODEOCTET=$(grep "^${MODEOCTET1}\.${MODEOCTET2}\." $1 | cut -f3 -d '.' | sort -n | uniq -c | sort | sed -E "s/[[:space:]]+//")
                 while IFS= read -r thirdmatch ; do
@@ -55,11 +55,11 @@ modefinder(){
 
                   if ((ISMODEOCTET3 > 1)); then
                     MODEOCTET3=$(echo $thirdmatch | cut -f2 -d ' ')
-                    echo "MODEOCTET3 = $MODEOCTET3"
+                    # echo "MODEOCTET3 = $MODEOCTET3"
 
                     CIDR1="${MODEOCTET1}.${MODEOCTET2}.${MODEOCTET3}.0/24"
-                    echo "[math Mode /24] found: $CIDR1"
-                    echo "[math Mode /24] resolve PTR of the IP numbers"
+                    # echo "[math Mode /24] found: $CIDR1"
+                    # echo "[math Mode /24] resolve PTR of the IP numbers"
                     # look at https://github.com/projectdiscovery/dnsx/issues/34 to add `-wd` support here
                     mapcidr -silent -cidr $CIDR1
                   fi
