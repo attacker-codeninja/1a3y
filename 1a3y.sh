@@ -180,7 +180,7 @@ checkwaybackurls(){
 }
 
 sortsubdomains(){
-  if [ "$wildcard" = "1" ]; then
+  if [[ -n "$wildcard" ]]; then
     sort -u $TARGETDIR/enumerated-subdomains.txt $TARGETDIR/wayback-subdomains-list.txt -o $TARGETDIR/1-real-subdomains.txt
     cp $TARGETDIR/1-real-subdomains.txt $TARGETDIR/2-all-subdomains.txt
   fi
