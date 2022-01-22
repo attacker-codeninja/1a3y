@@ -21,14 +21,14 @@ modefinder(){
     if [[ -n "$2" ]]; then
       if (($2 == 16)); then
         MODEOCTET=$(cut -f1 -d '.' $1 | sort -n | uniq -c | sort | tail -n1 | xargs)
-        ISMODEOCTET1=$(echo $MODEOCTET | awk '{ print $1 }')
+        ISMODEOCTET1=$(echo $MODEOCTET | cut -f1 -d ' ')
         if ((ISMODEOCTET1 > 1)); then
-          MODEOCTET1=$(echo $MODEOCTET | awk '{ print $2 }')
+          MODEOCTET1=$(echo $MODEOCTET | cut -f2 -d ' ')
 
           MODEOCTET=$(grep "^${MODEOCTET1}" $1 | cut -f2 -d '.' | sort -n | uniq -c | sort | tail -n1 | xargs)
-          ISMODEOCTET2=$(echo $MODEOCTET | awk '{ print $1 }')
+          ISMODEOCTET2=$(echo $MODEOCTET | cut -f1 -d ' ')
           if ((ISMODEOCTET2 > 1)); then
-            MODEOCTET2=$(echo $MODEOCTET | awk '{ print $2 }')
+            MODEOCTET2=$(echo $MODEOCTET | cut -f2 -d ' ')
             CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
             echo "[math Mode] found: $CIDR1"
             echo "[math Mode] resolve PTR of the IP numbers"
@@ -38,14 +38,14 @@ modefinder(){
         fi
       elif (($2 == 24)); then
         MODEOCTET=$(cut -f1 -d '.' $1 | sort -n | uniq -c | sort | tail -n1 | xargs)
-        ISMODEOCTET1=$(echo $MODEOCTET | awk '{ print $1 }')
+        ISMODEOCTET1=$(echo $MODEOCTET | cut -f1 -d ' ')
         if ((ISMODEOCTET1 > 1)); then
-          MODEOCTET1=$(echo $MODEOCTET | awk '{ print $2 }')
+          MODEOCTET1=$(echo $MODEOCTET | cut -f2 -d ' ')
 
           MODEOCTET=$(grep "^${MODEOCTET1}" $1 | cut -f2 -d '.' | sort -n | uniq -c | sort | tail -n1 | xargs)
-          ISMODEOCTET2=$(echo $MODEOCTET | awk '{ print $1 }')
+          ISMODEOCTET2=$(echo $MODEOCTET | cut -f1 -d ' ')
           if ((ISMODEOCTET2 > 1)); then
-            MODEOCTET2=$(echo $MODEOCTET | awk '{ print $2 }')
+            MODEOCTET2=$(echo $MODEOCTET | cut -f2 -d ' ')
             CIDR1="${MODEOCTET1}.${MODEOCTET2}.0.0/16"
             echo "[math Mode] found: $CIDR1"
             echo "[math Mode] resolve PTR of the IP numbers"
