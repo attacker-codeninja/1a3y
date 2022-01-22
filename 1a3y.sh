@@ -205,7 +205,8 @@ permutatesubdomains(){
     sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/1-real-subdomains-altered.txt
 
     echo "[$(date +%H:%M:%S)] dnsgen..."
-    axiom-scan $TARGETDIR/1-real-subdomains-altered.txt -m dnsgen-wordlist -wL $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt &> /dev/null
+    dnsgen $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/tmp/dnsgen_out.txt
+
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
 
     sort -u $TARGETDIR/1-real-subdomains-altered.txt $TARGETDIR/tmp/dnsgen_out.txt -o $TARGETDIR/2-all-subdomains.txt
