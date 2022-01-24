@@ -202,14 +202,13 @@ permutatesubdomains(){
     ./helpers/alterate.sh "$TARGETDIR/1-real-subdomains.txt" > $TARGETDIR/tmp/alterate_out.txt
     echo "[$(date +%H:%M:%S)] alterate.sh done"
 
-    sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/1-real-subdomains-altered.txt
-
     echo "[$(date +%H:%M:%S)] dnsgen..."
-    dnsgen $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/tmp/dnsgen_out.txt
+    dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/tmp/dnsgen_out.txt
+    # altdns -i $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
 
     sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
 
-    sort -u $TARGETDIR/1-real-subdomains-altered.txt $TARGETDIR/tmp/dnsgen_out.txt -o $TARGETDIR/2-all-subdomains.txt
+    sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/2-all-subdomains.txt
     echo "[$(date +%H:%M:%S)] dnsgen done"
   fi
 }
@@ -301,7 +300,7 @@ checkhttprobe(){
           | puredns -q -r $MINIRESOLVERS resolve --skip-wildcard-filter | tee $TARGETDIR/tmp/ptr_resolved_3.txt \
           | dnsx -silent -r $MINIRESOLVERS -a -resp-only | tee -a $TARGETDIR/dnsprobe_ip.txt | tee $TARGETDIR/tmp/ptr_ip_4.txt
 
-        [[ -s "$TARGETDIR"/tmp/ptr_ip_4.txt ]] && axiom-scan $TARGETDIR/tmp/ptr_ip_4.txt -m $HTTPXCALL -o $TARGETDIR/tmp/ptr_http_5.txt &> /dev/null
+        [[ -s "$TARGETDIR"/tmp/ptr_ip_4.txt ]] && axiom-scan $TARGETDIR/tmp/ptr_ip_4.txt -m $HTTPXCALL -o $TARGETDIR/tmp/ptr_http_5.txt
 
         # sort new assets
         [[ -s "$TARGETDIR"/tmp/ptr_http_5.txt ]] && sort -u $TARGETDIR/tmp/ptr_http_5.txt $TARGETDIR/3-all-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
@@ -531,14 +530,14 @@ linkfindercrawling(){
       if [[ -n "$brute" && -s "${TARGETDIR}/tmp/linkfinder-concatenated-path-list.txt" ]]; then
           echo "[$(date +%H:%M:%S)] bruteforce collected paths"
           grep -viE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](js|json|${JUICYFILETYPES})" $TARGETDIR/tmp/linkfinder-concatenated-path-list.txt > $TARGETDIR/tmp/linkfinder-path-list.txt || true
-          [[ -s $TARGETDIR/tmp/linkfinder-path-list.txt ]] && axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt &> /dev/null
+          [[ -s $TARGETDIR/tmp/linkfinder-path-list.txt ]] && axiom-scan $TARGETDIR/tmp/linkfinder-path-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/bruteforce_out.txt
           echo "[$(date +%H:%M:%S)] bruteforce done"
       fi
 
       # probe for 2xx juicy files
       if [[ -s $TARGETDIR/tmp/juicy-files-list.txt ]]; then
         echo "$(date +%H:%M:%S)] juicy files probe"
-        axiom-scan $TARGETDIR/tmp/juicy-files-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/juicy_out.txt &> /dev/null
+        axiom-scan $TARGETDIR/tmp/juicy-files-list.txt -m $CHECKHTTPX2XX -nfs -content-length -o $TARGETDIR/juicy_out.txt
         echo "$(date +%H:%M:%S)] juicy done"
       fi
     fi
