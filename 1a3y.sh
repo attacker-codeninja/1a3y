@@ -417,37 +417,37 @@ custompathlist(){
                                         > $CUSTOMFFUFWORDLIST || true
   fi
 
-    # js & json 
-    grep -ioE "(([[:alnum:][:punct:]]+)+)[.](js|json)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list.txt || true
-    # txt, log & other stuff
-    grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](${JUICYFILETYPES})" $FILTEREDFETCHEDLIST > $TARGETDIR/tmp/juicy-files-list.txt || true
+  # js & json 
+  grep -ioE "(([[:alnum:][:punct:]]+)+)[.](js|json)" $FILTEREDFETCHEDLIST | $CHECKHTTPX2XX -nfs > $TARGETDIR/tmp/js-list.txt || true
+  # txt, log & other stuff
+  grep -ioE "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](${JUICYFILETYPES})" $FILTEREDFETCHEDLIST > $TARGETDIR/tmp/juicy-files-list.txt || true
 
-    # SSRF list
-    # https://github.com/tomnomnom/gf/issues/55
-    # https://savannah.gnu.org/bugs/?61664
-    xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
+  # SSRF list
+  # https://github.com/tomnomnom/gf/issues/55
+  # https://savannah.gnu.org/bugs/?61664
+  xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
 
-    # SQLi list
-    grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
+  # SQLi list
+  grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
 
-    sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
-    sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
+  sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
+  sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
 
-    # LFI list
-    ### rabbit hole start
-    # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
-    ### rabbit hole end
-    # 1 limited to lfi pattern
-    grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST | qsreplace -a > $CUSTOMLFIQUERYLIST || true
-    # 2 limited to [:alnum:]=file.ext pattern
-    grep -oiE -e "(([[:alnum:][:punct:]]+)+)?=(([[:alnum:][:punct:]]+)+)\.(pdf|txt|log|md|php|json|csv|src|bak|old|jsp|sql|zip|xls|dll)" \
-               -e "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST | \
-               grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
-    sort -u $CUSTOMLFIQUERYLIST -o $CUSTOMLFIQUERYLIST
+  # LFI list
+  ### rabbit hole start
+  # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
+  ### rabbit hole end
+  # 1 limited to lfi pattern
+  grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST | qsreplace -a > $CUSTOMLFIQUERYLIST || true
+  # 2 limited to [:alnum:]=file.ext pattern
+  grep -oiE -e "(([[:alnum:][:punct:]]+)+)?=(([[:alnum:][:punct:]]+)+)\.(pdf|txt|log|md|php|json|csv|src|bak|old|jsp|sql|zip|xls|dll)" \
+              -e "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST | \
+              grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
+  sort -u $CUSTOMLFIQUERYLIST -o $CUSTOMLFIQUERYLIST
 
-    < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
-    sort -u $TARGETDIR/ssrf-path-list.txt -o $TARGETDIR/ssrf-path-list.txt
-    echo "[$(date +%H:%M:%S)] Custom done."
+  < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
+  sort -u $TARGETDIR/ssrf-path-list.txt -o $TARGETDIR/ssrf-path-list.txt
+  echo "[$(date +%H:%M:%S)] Custom done."
 }
 
 linkfindercrawling(){
