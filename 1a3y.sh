@@ -339,13 +339,18 @@ gospidertest(){
     cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
     # prepare paths list
-    grep -e '\[form\]' -e '\[javascript\]' -e '\[linkfinder\]' -e '\[robots\]' -e '\[href\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f3 -d ' ' | sort -u > $TARGETDIR/gospider/gospider_out.txt
+    grep -e '\[form\]' -e '\[javascript\]' -e '\[linkfinder\]' -e '\[robots\]' -e '\[href\]' $TARGETDIR/tmp/gospider_raw_out.txt \
+      | cut -f3 -d ' ' \
+      | sort -u > $TARGETDIR/gospider/gospider_out.txt
+
     grep '\[url\]' $TARGETDIR/tmp/gospider_raw_out.txt | cut -f5 -d ' ' | sort -u >> $TARGETDIR/gospider/gospider_out.txt
 
     if [[ -z "$single" && -z "$list" ]]; then
-        # extract domains
-        < $TARGETDIR/gospider/gospider_out.txt unfurl --unique domains | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" | sort -u | \
-                      $HTTPXCALL >> $TARGETDIR/3-all-subdomain-live-scheme.txt
+      # extract domains
+      < $TARGETDIR/gospider/gospider_out.txt unfurl --unique domains \
+        | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" \
+        | sort -u \
+        | $HTTPXCALL >> $TARGETDIR/3-all-subdomain-live-scheme.txt
     fi
     echo "[$(date +%H:%M:%S)] [gospider] done."
   fi
