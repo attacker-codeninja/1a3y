@@ -411,10 +411,11 @@ custompathlist(){
     # filter first and first-second paths from full paths
     # remove empty lines
     # remove js|json|etc entries
-    < $FILTEREDFETCHEDLIST unfurl paths | sed 's/^\///;/^$/d;/web.archive.org/d;/@/d' | cut -f1-2 -d '/' | sort -u | sed 's/\/$//' | \
-                                        #  tee -a $CUSTOMFFUFWORDLIST | cut -f1 -d '/' | sort -u  >> $CUSTOMFFUFWORDLIST
-                                        grep -viE -e "(([[:alnum:][:punct:]]+)+)[.](js|json)" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](${JUICYFILETYPES})" \
-                                        > $CUSTOMFFUFWORDLIST || true
+    < $FILTEREDFETCHEDLIST unfurl paths | sed 's/^\///;/^$/d;/web.archive.org/d;/@/d' \
+      | cut -f1-2 -d '/' \
+      | sort -u \
+      | sed 's/\/$//' \
+      | grep -viE -e "(([[:alnum:][:punct:]]+)+)[.](js|json)" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)?[.]?(([[:alnum:][:punct:]]+)+)[.](${JUICYFILETYPES})" > $CUSTOMFFUFWORDLIST || true
   fi
 
   # js & json 
