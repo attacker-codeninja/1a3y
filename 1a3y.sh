@@ -233,32 +233,32 @@ dnsprobing(){
     echo $1 | dnsx -silent -retry 2 -a -resp-only -o $TARGETDIR/dnsprobe_ip.txt
     echo $1 > $TARGETDIR/dnsprobe_subdomains.txt
   elif [[ -n "$list" ]]; then
-      echo "[$(date +%H:%M:%S)] [massdns] probing and wildcard sieving..."
-      axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
-      # # additional resolving because shuffledns/pureDNS missing IP on output
-      echo
-      echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
-      # -t mean cuncurrency
-      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
-      # clear file from [ and ] symbols
-      tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
-      # split resolved hosts ans its IP (for masscan)
-      cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
-      cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
+    echo "[$(date +%H:%M:%S)] [massdns] probing and wildcard sieving..."
+    axiom-scan $TARGETDIR/enumerated-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
+    # # additional resolving because shuffledns/pureDNS missing IP on output
+    echo
+    echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
+    # -t mean cuncurrency
+    axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -a -resp -o $TARGETDIR/dnsprobe_out.txt
+    # clear file from [ and ] symbols
+    tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
+    # split resolved hosts ans its IP (for masscan)
+    cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
+    cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   else
-      echo "[$(date +%H:%M:%S)] [puredns] massdns probing with wildcard sieving..."
-      axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
-      # additional resolving because shuffledns missing IP on output
-      echo
-      echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
-      # additional resolving because shuffledns missing IP on output
-      # -t mean cuncurrency
-      axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -r $AXIOMRESOLVERS -a -resp -o $TARGETDIR/dnsprobe_out.txt
-      # clear file from [ and ] symbols
-      tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
-      # split resolved hosts ans its IP (for masscan)
-      cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
-      cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
+    echo "[$(date +%H:%M:%S)] [puredns] massdns probing with wildcard sieving..."
+    axiom-scan $TARGETDIR/2-all-subdomains.txt -m puredns-resolve -r $AXIOMRESOLVERS --wildcard-batch 500000 --wildcard-tests 50 -l 500 -o $TARGETDIR/resolved-list.txt
+    # additional resolving because shuffledns missing IP on output
+    echo
+    echo "[$(date +%H:%M:%S)] [dnsx] getting hostnames and its A records..."
+    # additional resolving because shuffledns missing IP on output
+    # -t mean cuncurrency
+    axiom-scan $TARGETDIR/resolved-list.txt -m dnsx -silent -retry 2 -rl $REQUESTSPERSECOND -r $AXIOMRESOLVERS -a -resp -o $TARGETDIR/dnsprobe_out.txt
+    # clear file from [ and ] symbols
+    tr -d '\[\]' < $TARGETDIR/dnsprobe_out.txt > $TARGETDIR/dnsprobe_output_tmp.txt
+    # split resolved hosts ans its IP (for masscan)
+    cut -f1 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_subdomains.txt
+    cut -f2 -d ' ' $TARGETDIR/dnsprobe_output_tmp.txt | sort | uniq > $TARGETDIR/dnsprobe_ip.txt
   fi
   echo "[$(date +%H:%M:%S)] [dnsx] done."
 }
@@ -657,7 +657,7 @@ masscantest(){
 #######################################
 # TEST all IP to verify scope visually
     echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
-    axiom-scan $TARGETDIR/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
+    axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
 
 #######################################
     echo "[$(date +%H:%M:%S)] [naabu] done."
