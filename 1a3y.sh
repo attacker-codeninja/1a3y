@@ -45,6 +45,7 @@ alt= # permutate and alterate subdomains
 discord= # send notifications
 vps= # tune async jobs to reduce stuff like concurrent headless chromium but increase bruteforce list and enable DNS bruteforce
 quiet= # quiet mode
+night= # enable nighty scan (perform http and port discovery agains modefinder)
 
 AXIOMRESOLVERS=/home/op/lists/vps_resolvers.txt # default axiom-configuration for the droplets
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
@@ -308,15 +309,17 @@ checkhttprobe(){
 
 #######################################
 # TEST all IP to verify scope visually
-        echo "[$(date +%H:%M:%S)] [math Mode] TEST httpx probes of all finded Modes of IPs"
-        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -o $TARGETDIR/http_modefinder_out.txt
+        if [[ -n "$night" ]]; then
+          echo "[$(date +%H:%M:%S)] [math Mode] TEST httpx probes of all finded Modes of IPs"
+          axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -o $TARGETDIR/http_modefinder_out.txt
 
-        echo "$(date +%H:%M:%S)] secretfinder"
-        mkdir -p $TARGETDIR/tmp/secretfinder/modefinder
-        # https://github.com/m4ll0k/SecretFinder/issues/20
-        axiom-scan $TARGETDIR/http_modefinder_out.txt -m secretfinder -o $TARGETDIR/tmp/secretfinder/modefinder
-        cat $TARGETDIR/tmp/secretfinder/modefinder/merge/* > $TARGETDIR/secretfinder_modefinder_out.txt
-        echo "$(date +%H:%M:%S)] secretfinder done"
+          echo "$(date +%H:%M:%S)] secretfinder"
+          mkdir -p $TARGETDIR/tmp/secretfinder/modefinder
+          # https://github.com/m4ll0k/SecretFinder/issues/20
+          axiom-scan $TARGETDIR/http_modefinder_out.txt -m secretfinder -o $TARGETDIR/tmp/secretfinder/modefinder
+          cat $TARGETDIR/tmp/secretfinder/modefinder/merge/* > $TARGETDIR/secretfinder_modefinder_out.txt
+          echo "$(date +%H:%M:%S)] secretfinder done"
+        fi
 
 #######################################
 
@@ -669,9 +672,10 @@ masscantest(){
 
 #######################################
 # TEST all IP to verify scope visually
-    echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
-    axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
-
+    if [[ -n "$night" ]]; then
+      echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
+      axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
+    fi
 #######################################
     echo "[$(date +%H:%M:%S)] [naabu] done."
   fi
@@ -1003,6 +1007,8 @@ checkargs(){
           -v | --vps )            vps="1"
                                   ;;
           -q | --quiet )          quiet="1"
+                                  ;;
+          --night )               night="1"
                                   ;;
           # * )                     invokation $1
           #                         exit 1
