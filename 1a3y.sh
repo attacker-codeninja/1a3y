@@ -309,7 +309,14 @@ checkhttprobe(){
 #######################################
 # TEST all IP to verify scope visually
         echo "[$(date +%H:%M:%S)] [math Mode] TEST httpx probes of all finded Modes of IPs"
-        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -status-code -o $TARGETDIR/http_modefinder_out.txt 1> /dev/null
+        axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m $HTTPXCALL -o $TARGETDIR/http_modefinder_out.txt
+
+        echo "$(date +%H:%M:%S)] secretfinder"
+        mkdir -p $TARGETDIR/tmp/secretfinder/modefinder
+        # https://github.com/m4ll0k/SecretFinder/issues/20
+        axiom-scan $TARGETDIR/http_modefinder_out.txt -m secretfinder -o $TARGETDIR/tmp/secretfinder/modefinder
+        cat $TARGETDIR/tmp/secretfinder/modefinder/merge/* > $TARGETDIR/secretfinder_modefinder_out.txt
+        echo "$(date +%H:%M:%S)] secretfinder done"
 
 #######################################
 
