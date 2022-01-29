@@ -349,7 +349,7 @@ gospidertest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
     echo "[$(date +%H:%M:%S)] [gospider] Web crawling..."
-    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider 1> /dev/null
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider
     # combine the results and filter out of scope
     cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
