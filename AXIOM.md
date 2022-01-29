@@ -57,3 +57,6 @@ jq '.sshkey="'axiom_rsa'"' <"$account_path">"$AXIOM_PATH"/tmp.json ; mv "$AXIOM_
 cat ~/.ssh/axiom_rsa.pub >$AXIOM_PATH/configs/authorized_keys
  ```
 
+Remove logs to free space:
+`rm -rf /root/.axiom/logs/*`
+`rm -rf /root/.axiom/tmp/*`
