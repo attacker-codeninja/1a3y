@@ -629,13 +629,13 @@ lfitest(){
   if [[ -s "$CUSTOMLFIQUERYLIST" ]]; then
     echo
     echo "[$(date +%H:%M:%S)] [LFI] ffuf with all live servers with lfi-path-list using wordlist/LFI-payload.txt..."
+    # ffuf -u HOSTPATH -w $CUSTOMLFIQUERYLIST:HOST -w $LFIPAYLOAD:PATH -mr "root:x" -timeout 5 -o $TARGETDIR/ffuf/lfi-matched-url.csv -of csv
       axiom-scan $LFIPAYLOAD -m ffuf-hostpath -s \
             -wL $CUSTOMLFIQUERYLIST \
             -H "$CUSTOMHEADER" \
             -timeout 5 \
             -t 2 \
             -p 0.5 \
-            -mr "root:x" \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
 
     if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
