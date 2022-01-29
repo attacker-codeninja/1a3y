@@ -199,18 +199,23 @@ dnsbruteforcing(){
 
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
+    echo "[$(date +%H:%M:%S)] dnsgen resolves and http probes..."
+    dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST \
+      | puredns -r $MINIRESOLVERS resolve -q --wildcard-batch 500000 --wildcard-tests 20 -l 500 \
+      | tee $TARGETDIR/resolved_dnsgen_out.txt
+    # dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/2-all-subdomains.txt
+    # altdns -i $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
+    echo "[$(date +%H:%M:%S)] dnsgen done"
+
+    sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/resolved_dnsgen_out.txt -o $TARGETDIR/1-real-subdomains.txt
+
     echo "[$(date +%H:%M:%S)] alterate.sh fuzz..."
     ./helpers/alterate.sh "$TARGETDIR/1-real-subdomains.txt" > $TARGETDIR/tmp/alterate_out.txt
     echo "[$(date +%H:%M:%S)] alterate.sh done"
 
-    echo "[$(date +%H:%M:%S)] dnsgen..."
-    dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/tmp/dnsgen_out.txt
-    # altdns -i $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
+    # sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/2-all-subdomains.txt
 
-    sed "${SEDOPTION[@]}" '/^[.]/d;/^[-]/d;/\.\./d' $TARGETDIR/tmp/dnsgen_out.txt
-
-    sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/dnsgen_out.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/2-all-subdomains.txt
-    echo "[$(date +%H:%M:%S)] dnsgen done"
+    sort -u $TARGETDIR/1-real-subdomains.txt $TARGETDIR/tmp/alterate_out.txt -o $TARGETDIR/2-all-subdomains.txt
   fi
 }
 
