@@ -349,7 +349,7 @@ gospidertest(){
   if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
     echo
     echo "[$(date +%H:%M:%S)] [gospider] Web crawling..."
-    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r -H "$CUSTOMHEADER" -o $TARGETDIR/gospider
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m gospider -r --no-redirect -H "$CUSTOMHEADER" -o $TARGETDIR/gospider
     # combine the results and filter out of scope
     cat $TARGETDIR/gospider/merge/* > $TARGETDIR/tmp/gospider_raw_out.txt
 
@@ -365,7 +365,8 @@ gospidertest(){
       < $TARGETDIR/gospider/gospider_out.txt unfurl --unique domains \
         | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" \
         | sort -u \
-        | $HTTPXCALL >> $TARGETDIR/3-all-subdomain-live-scheme.txt
+        | $HTTPXCALL \
+        | tee -a $TARGETDIR/3-all-subdomain-live-scheme.txt
     fi
     echo "[$(date +%H:%M:%S)] [gospider] done."
   fi
