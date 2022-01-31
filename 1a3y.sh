@@ -200,7 +200,7 @@ dnsbruteforcing(){
 
 permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
-    echo "[$(date +%H:%M:%S)] dnsgen resolves and http probes..."
+    echo "[$(date +%H:%M:%S)] dnsgen --> resolves..."
     dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST \
       | puredns -r $MINIRESOLVERS resolve -q --wildcard-batch 500000 --wildcard-tests 20 -l 500 \
       | tee $TARGETDIR/resolved_dnsgen_out.txt
