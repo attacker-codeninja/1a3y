@@ -456,11 +456,14 @@ custompathlist(){
   # grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|source|attach|cmd|action|board|detail|location|file|download|path|folder|prefix|include|inc|locate|site|show|doc|view|content|con|document|layout|mod|root|pg|style|template|php_path|admin)=" $CUSTOMSSRFQUERYLIST > $CUSTOMLFIQUERYLIST || true
   ### rabbit hole end
   # 1 limited to lfi pattern
-  grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST | qsreplace -a > $CUSTOMLFIQUERYLIST || true
+  grep -oiE "(([[:alnum:][:punct:]]+)+)?(cat|dir|doc|attach|cmd|location|file|download|path|include|include_once|require|require_once|document|root|php_path|admin|debug|log)=" $CUSTOMSSRFQUERYLIST \
+    | qsreplace -a > $CUSTOMLFIQUERYLIST || true
   # 2 limited to [:alnum:]=file.ext pattern
   grep -oiE -e "(([[:alnum:][:punct:]]+)+)?=(([[:alnum:][:punct:]]+)+)\.(pdf|txt|log|md|php|json|csv|src|bak|old|jsp|sql|zip|xls|dll)" \
-              -e "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST | \
-              grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
+    -e "(([[:alnum:][:punct:]]+)+)?(php3?|aspx)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST \
+    | grep -oiE -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)=" -e "((https?:\/\/)|www\.)(([[:alnum:][:punct:]]+)+)\?[[:alnum:]]+=" \
+    | qsreplace -a  >> $CUSTOMLFIQUERYLIST || true
+
   sort -u $CUSTOMLFIQUERYLIST -o $CUSTOMLFIQUERYLIST
 
   < $CUSTOMSSRFQUERYLIST unfurl format '%p%?%q' | sed "/^\/\;/d;/^\/\:/d;/^\/\'/d;/^\/\,/d;/^\/\./d" | qsreplace -a > $TARGETDIR/ssrf-path-list.txt
