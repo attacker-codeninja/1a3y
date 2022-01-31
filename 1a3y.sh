@@ -51,7 +51,7 @@ AXIOMRESOLVERS=/home/op/lists/vps_resolvers.txt # default axiom-configuration fo
 MINIRESOLVERS=./resolvers/mini_resolvers.txt
 # https://github.com/ProjectAnte/dnsgen/blob/master/dnsgen/words.txt
 ALTDNSWORDLIST=./wordlist/dnsgen_words_custom.txt
-# https://github.com/six2dez/OneListForAll
+# https://github.com/six2dez/OneListForAll/releases/download/v2.3/onelistforall.txt
 # https://gist.github.com/six2dez/a307a04a222fab5a57466c51e1569acf
 # https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt
 BRUTEDNSWORDLIST=./wordlist/six2dez-dns-wordlist.txt
