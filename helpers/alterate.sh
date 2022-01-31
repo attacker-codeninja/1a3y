@@ -107,6 +107,27 @@ twodigit() {
   fi
 }
 
+#######################################
+# grep three and more digits to alterate
+# Arguments:
+#   file
+# Example:
+#   test.957.demo.com -->
+#   test.1.demo.com
+#   ...
+#   test.99999.demo.com
+#######################################
+threeandmoredigits() {
+  THREEANDMORE_1=$(grep -E '[[:digit:]]{3,}' $1)
+  if [[ -n $THREEANDMORE_1 ]]; then
+    for X in {0..99999}; do
+      echo "$THREEANDMORE_1" | sed -E "s/[[:digit:]]{3,}/${X}/"
+    done
+  fi
+}
+
+
 # main entry point
 onedigit "$1"
 twodigit "$1"
+threeandmoredigits "$1"
