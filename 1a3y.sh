@@ -446,7 +446,7 @@ custompathlist(){
   xargs -I '{}' echo '^https?://(([[:alnum:][:punct:]]+)+)?{}=' < $PARAMSLIST | grep -oiEf - $FILTEREDFETCHEDLIST >> $CUSTOMSSRFQUERYLIST || true
 
   # SQLi list
-  grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
+  grep -oiE "(([[:alnum:][:punct:]]+)+)?(php3?|aspx)\?[[:alnum:]]+=([[:alnum:][:punct:]]+)?" $FILTEREDFETCHEDLIST > $CUSTOMSQLIQUERYLIST || true
 
   sort -u $CUSTOMSSRFQUERYLIST -o $CUSTOMSSRFQUERYLIST
   sort -u $CUSTOMSQLIQUERYLIST -o $CUSTOMSQLIQUERYLIST
