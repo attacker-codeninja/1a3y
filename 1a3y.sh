@@ -642,17 +642,16 @@ lfitest(){
             -t 2 \
             -p 0.5 \
             -o $TARGETDIR/ffuf/lfi-matched-url.csv
-
-    if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
-      # https://raw.githubusercontent.com/storenth/nuclei-templates/master/vulnerabilities/other/storenth-lfi.yaml
-      echo "[$(date +%H:%M:%S)] [LFI] nuclei fuzz for LFI"
-        axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
-            -wL "${PWD}/wordlist/storenth-lfi.yaml" \
-            -H "$CUSTOMHEADER" \
-            -rl "$REQUESTSPERSECOND" \
-            -o $TARGETDIR/nuclei/nuclei_lfi_out.txt
-      echo "[$(date +%H:%M:%S)] [LFI] done."
-    fi
+  fi
+  if [ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]; then
+    # https://raw.githubusercontent.com/storenth/nuclei-templates/master/vulnerabilities/other/storenth-lfi.yaml
+    echo "[$(date +%H:%M:%S)] [LFI] nuclei fuzz for LFI"
+    axiom-scan $TARGETDIR/3-all-subdomain-live-scheme.txt -m nuclei \
+      -wL "${PWD}/wordlist/storenth-lfi.yaml" \
+      -H "$CUSTOMHEADER" \
+      -rl "$REQUESTSPERSECOND" \
+      -o $TARGETDIR/nuclei/nuclei_lfi_out.txt
+    echo "[$(date +%H:%M:%S)] [LFI] done."
   fi
 }
 
