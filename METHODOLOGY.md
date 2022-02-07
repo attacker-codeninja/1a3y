@@ -20,9 +20,17 @@ run
 grep smtp /usr/local/Cellar/nmap/7.92/share/nmap/scripts/script.db
 sudo nmap --spoof-mac 0 -n -sV --version-intensity 9 --script=smtp,http-headers -sS -Pn -T4 -f -p5001 217.119.14.10
 ```
-5. Use Firefox and Burp to proxy all requests while exploratory testing
-6. Try to find file upload vulnerabilities
-7. Perform Google, Trello, Atlassian, Github, Bitbucket dorking to find out interesting params based on screenshots (site: inurl:)
+5. Use Firefox and Burp to proxy all target-features requests while exploratory testing. Access the functionalities that you don’t usually use.
+6. Perform Google, Trello, Atlassian, Github, Bitbucket, AWS dorking to find out interesting params based on screenshots:
+```
+site:example.com "index of"
+site:example.com filetype:log
+site:example.com ext:log
+site:example.com ext:sh
+site:example.com ext:pl
+site:s3.amazonaws.com COMPANY_NAME
+```
+7. Try to find file upload vulnerabilities
 9. Investigate `XHR` requests, fuzz parameters and variables
 11. GET/POST Bruteforce for directories: fuzbo0oM-top10000 --> raft --> target specific using `kalilinux/kali-rolling` image under docker (`dirb`, `gobuster`, `ffuf`, etc):
 ```bash
