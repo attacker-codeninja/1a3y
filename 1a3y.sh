@@ -202,7 +202,7 @@ permutatesubdomains(){
   if [[ -n "$alt" && -n "$wildcard" && -n "$vps" ]]; then
     echo "[$(date +%H:%M:%S)] dnsgen --> resolves..."
     dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST \
-      | puredns -r $MINIRESOLVERS resolve -q --wildcard-batch 500000 --wildcard-tests 20 -l 500 \
+      | puredns -r $MINIRESOLVERS resolve -q --wildcard-batch 800000 --wildcard-tests 10 -l 500 \
       | tee $TARGETDIR/resolved_dnsgen_out.txt
     # dnsgen $TARGETDIR/1-real-subdomains.txt -w $CUSTOMSUBDOMAINSWORDLIST > $TARGETDIR/2-all-subdomains.txt
     # altdns -i $TARGETDIR/1-real-subdomains-altered.txt -w $CUSTOMSUBDOMAINSWORDLIST -o $TARGETDIR/tmp/dnsgen_out.txt
@@ -677,13 +677,13 @@ masscantest(){
     # 25/587-smtp, 110/995-pop3, 143/993-imap, 445-smb, 3306-mysql, 3389-rdp, 5432-postgres, 5900/5901-vnc, 27017-mongodb
     # masscan -p0-65535 | -p0-1000,2375,3306,3389,4990,5432,5900,6379,6066,8080,8383,8500,8880,8983,9000,27017 -iL $TARGETDIR/dnsprobe_ip.txt --rate 1000 --open-only -oG $TARGETDIR/masscan_output.gnmap
     # axiom-scan $TARGETDIR/dnsprobe_ip.txt -m masscan -oG $TARGETDIR/masscan_output.gnmap -p1-65535 --rate 100
-    axiom-scan $TARGETDIR/dnsprobe_ip.txt -m naabu -silent -rate 150 -p - -o $TARGETDIR/naabu_out
+    axiom-scan $TARGETDIR/dnsprobe_ip.txt -m naabu -silent -rate 450 -p - -o $TARGETDIR/naabu_out
 
 #######################################
 # TEST all IP to verify scope visually
     if [[ -n "$night" ]]; then
       echo "[$(date +%H:%M:%S)] [naabu] TEST Looking for open ports..."
-      axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m naabu -silent -rate 250 -p - -o $TARGETDIR/naabu_modefinder_out
+      axiom-scan $TARGETDIR/tmp/modefinder_out.txt -m naabu -silent -rate 450 -p - -o $TARGETDIR/naabu_modefinder_out
     fi
 #######################################
     echo "[$(date +%H:%M:%S)] [naabu] done."
