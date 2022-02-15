@@ -88,11 +88,14 @@ enumeratesubdomains(){
     # PID_SUBFINDER_FIRST=$!
 
     echo "assetfinder..."
-    assetfinder --subs-only $1 > $TARGETDIR/assetfinder-list.txt
+    assetfinder --subs-only $1 | grep "[.]${1}$" | sed '/^*/d' > $TARGETDIR/assetfinder-list.txt
     # PID_ASSETFINDER=$!
 
     echo "github-subdomains.py..."
     github-subdomains -d $1 -t $GITHUBTOKEN | sed "s/^\.//;/error/d" | grep "[.]${1}" > $TARGETDIR/github-subdomains-list.txt || true
+
+    echo "crt.sh..."
+    curl "https://crt.sh/?q=${1}&output=json" | jq  -r '.[] | .name_value,.common_name' | sort -u | sed '/^*/d;/null/d' > $TARGETDIR/crt-list.txt || true
 
     # echo "wait PID_SUBFINDER_FIRST $PID_SUBFINDER_FIRST and PID_ASSETFINDER $PID_ASSETFINDER"
     # wait $PID_SUBFINDER_FIRST $PID_ASSETFINDER
@@ -100,12 +103,8 @@ enumeratesubdomains(){
     # echo "amass..."
     # amass enum --passive -log $TARGETDIR/amass_errors.log -d $1 -o $TARGETDIR/amass-list.txt
 
-    SCOPE=$1
-    grep "[.]${SCOPE}$" $TARGETDIR/assetfinder-list.txt | sort -u -o $TARGETDIR/assetfinder-list.txt
-    # remove all lines start with *-asterix and out-of-scope domains
-    sed "${SEDOPTION[@]}" '/^*/d' $TARGETDIR/assetfinder-list.txt
     # sort enumerated subdomains
-    sort -u "$TARGETDIR"/subfinder-list.txt $TARGETDIR/assetfinder-list.txt "$TARGETDIR"/github-subdomains-list.txt -o "$TARGETDIR"/enumerated-subdomains.txt
+    sort -u $TARGETDIR/subfinder-list.txt $TARGETDIR/assetfinder-list.txt $TARGETDIR/github-subdomains-list.txt $TARGETDIR/crt-list.txt  -o "$TARGETDIR"/enumerated-subdomains.txt
 
     echo $1 >> "${TARGETDIR}/enumerated-subdomains.txt" # to be sure main domain added in case of wildcard
 
