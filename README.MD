@@ -27,18 +27,15 @@ _|__\__ _\___|\__  /
 - Teardown and program exit housekeeping
 
 ## Workflow
-Due to commercial origin we do not provide any implementation steps.
+Due to commercial origin we do not provide any implementation steps, but [here](./AXIOM.md) some starting point.
 ![1a3y-flow](./misc/1a3y-private-flow.png)
 
 ## BlackHat USA
 Lazyrecon v2 was invited and presented at the [BlackHat USA 2021](https://www.blackhat.com/us-21/arsenal/schedule/#lazyrecon-v-24051). Now it is officially on the [BlackHat Arsenal track](https://github.com/toolswatch/blackhat-arsenal-tools/blob/master/exploitation/lazyrecon.md).
 
-## Notes
-**Acknowledgement:** This code was created for personal use with hosts you able to hack/explore by any of the known bug bounty program. Use it at your own risk.
 
-[See release notes](misc/NOTES.MD)
 
-# Crypto token (WIP)
-- [1A3Y](https://bscscan.com/token/0xb9a36d01577d82909ca01e20db58293a6baa5ddd) helps `1a3y` create new features.
+## Crypto token (WIP)
+- [1A3Y](https://bscscan.com/token/0xb9a36d01577d82909ca01e20db58293a6baa5ddd) token must helps create new buffs on the idea.
 - Track the token activity on [poocoin](https://poocoin.app/tokens/0xb9a36d01577d82909ca01e20db58293a6baa5ddd)
-- 💬 Join 1A3Y's [telegram](https://t.me/lazyrecontoken)
+- 💬 Join 1A3Y's [telegram](https://t.me/lazyrecontoken) and read about its features.
