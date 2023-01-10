@@ -1,5 +1,5 @@
 {
-  "do_key": "5c208a022efe7fce19ef0c86ceeb4b9ffcb65cf7af260652f0ba2e3e1b18a6bc",
+  "do_key": "YOUR_KEY_HERE",
   "region": "sgp1",
   "provider": "do",
   "default_size": "s-1vcpu-1gb",

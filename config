@@ -2,14 +2,14 @@ export HOMEUSER=root
 export HOMEDIR=/root
 export STORAGEDIR=${HOMEDIR}/lazytargets
 
-export GITHUBTOKEN=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
-export GITHUB_DOCKER_TOKEN=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
-export VT_API_KEY=d1dc4fbed0cffb97be26994a5fe03d08ee1488379c36c80d175c67856ac948ed
-export SPYSE_API_TOKEN=10f289e6-1f58-4a9d-800b-08bcdb311372
-export DIGITALOCEANTOKEN=5c208a022efe7fce19ef0c86ceeb4b9ffcb65cf7af260652f0ba2e3e1b18a6bc
-export DISCORDWEBHOOKURL=https://discord.com/api/webhooks/828907870493737020/kpsL8z5wK23vTwChaNIEfd2HSIBEMfFQMqj-3nbV5VrHRu-I61i5eNmApcVMVEoxbOpw
+export GITHUBTOKEN=
+export GITHUB_DOCKER_TOKEN=
+export VT_API_KEY=
+export SPYSE_API_TOKEN=
+export DIGITALOCEANTOKEN=
+export DISCORDWEBHOOKURL="https://discord.com/api/webhooks/${YOUR_TOKEN_HERE}"
 
-export CUSTOMHEADER='X-HackerOne-Research:storenth'
+export CUSTOMHEADER='X-1a3y-Research:storenth'
 export NUMBEROFTHREADS=20
 export REQUESTSPERSECOND=5
 export TIMEOUT=60 # seconds
